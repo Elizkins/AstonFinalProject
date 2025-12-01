@@ -19,30 +19,77 @@ public class Student {
         private String groupNumber;
         private double averageGrade;
         private String recordBookNumber;
-        
+
+        // Валидация номера группы
+        private void validateGroupNumber(String groupNumber) {
+            if (groupNumber == null || groupNumber.trim().isEmpty()) {
+                throw new IllegalArgumentException("Group number cannot be empty");
+            }
+            if (!groupNumber.matches("[A-Za-z0-9-]+")) {
+                throw new IllegalArgumentException("Invalid group number format");
+            }
+        }
+
+        // Валидация среднего балла
+        private void validateAverageGrade(double grade) {
+            if (grade < 0 || grade > 5.0) {
+                throw new IllegalArgumentException("Average grade must be between 0 and 5.0");
+            }
+        }
+
+        // Валидация номера зачетки
+        private void validateRecordBookNumber(String recordNumber) {
+            if (recordNumber == null || recordNumber.trim().isEmpty()) {
+                throw new IllegalArgumentException("Record book number cannot be empty");
+            }
+            if (!recordNumber.matches("\\d{6,10}")) {
+                throw new IllegalArgumentException("Record book number must be 6-10 digits");
+            }
+        }
+
+
+
+
         public Builder groupNumber(String groupNumber) {
+            validateGroupNumber(groupNumber);
             this.groupNumber = groupNumber;
             return this;
         }
         
         public Builder averageGrade(double averageGrade) {
+            validateAverageGrade(averageGrade);
             this.averageGrade = averageGrade;
             return this;
         }
         
         public Builder recordBookNumber(String recordBookNumber) {
+            validateRecordBookNumber(recordBookNumber);
             this.recordBookNumber = recordBookNumber;
             return this;
         }
         
         public Student build() {
+            if (groupNumber == null) {
+                throw new IllegalStateException("Требуется номер группы");
+            }
+            if (recordBookNumber == null) {
+                throw new IllegalStateException("Требуется номер книги учета");
+            }
+            if (groupNumber.trim().isEmpty()) {
+                throw new IllegalStateException("Номер группы не может быть пустым");
+            }
+
+            if (recordBookNumber.trim().isEmpty()) {
+                throw new IllegalStateException("Номер зачетной книги не может быть пустым");
+            }
+
             return new Student(this);
         }
     }
     
     @Override
     public String toString() {
-        return String.format("Student[Group: %s, Grade: %.2f, Record: %s]", 
+        return String.format("Student[Group: %s, Grade: %.2f, Record: %s]",
             groupNumber, averageGrade, recordBookNumber);
     }
 }
