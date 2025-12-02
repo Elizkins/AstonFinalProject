@@ -7,7 +7,6 @@ package org.secondgroup.sort.algorithms;
  * to be sorted should implement {@link Comparable} interface because of use {@link Comparable#compareTo(Object)} in
  * {@link MergeSort#merge(Comparable[], int, int, int)} method.
  */
-
 public class MergeSort {
 
     public static <T extends Comparable<? super T>> void mergeSort(T[] array) {
@@ -32,12 +31,16 @@ public class MergeSort {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends Comparable<? super T>> void merge(T[] array, int left, int mid, int right) {
 
         // Creating temporary arrays
         int length1 = mid - left + 1;
         int length2 = right - mid;
-        T[] leftSubArray = (T[]) new Comparable[length1]; // FIXME: is it dangerous? can't handle wright this yet
+
+        // Why @SuppressWarnings: here we are certain that the cast is safe and will not lead to a ClassCastException
+        // because of using it only with Student class in a study project
+        T[] leftSubArray = (T[]) new Comparable[length1];
         T[] rightSubArray = (T[]) new Comparable[length2];
 
         // Copying in temp arrays

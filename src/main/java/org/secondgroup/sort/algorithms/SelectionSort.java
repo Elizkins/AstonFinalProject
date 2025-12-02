@@ -6,7 +6,6 @@ package org.secondgroup.sort.algorithms;
  * uses Generics, so classes meant to be sorted should implement {@link Comparable} interface because of use
  * {@link Comparable#compareTo(Object)} in {@link SelectionSort#sort(Comparable[])} method.
  */
-
 public class SelectionSort {
 
     public static <T extends Comparable<? super T>> void sort(T[] arr) {

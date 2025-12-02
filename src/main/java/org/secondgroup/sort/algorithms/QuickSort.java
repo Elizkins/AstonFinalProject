@@ -7,7 +7,6 @@ package org.secondgroup.sort.algorithms;
  * uses Generics, so classes meant to be sorted should implement {@link Comparable} interface because of use
  * {@link Comparable#compareTo(Object)} in {@link QuickSort#partition(Comparable[], int, int)} method.
  */
-
 public class QuickSort {
 
     public static <T extends Comparable<? super T>> void quickSort(T[] array) {
