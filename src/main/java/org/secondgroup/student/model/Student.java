@@ -3,6 +3,7 @@ package org.secondgroup.student.model;
 import java.util.Objects;
 
 public class Student implements Comparable<Student>{
+
     private final String groupNumber;
     private final double averageGrade;
     private final String recordBookNumber;
@@ -109,6 +110,7 @@ public class Student implements Comparable<Student>{
 
     @Override
     public boolean equals(Object o) {
+        if(this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
         return Double.compare(averageGrade, student.averageGrade) == 0 && Objects
