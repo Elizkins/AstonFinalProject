@@ -2,7 +2,8 @@ package org.secondgroup.student.model;
 
 import java.util.Objects;
 
-public class Student {
+public class Student implements Comparable<Student>{
+
     private final String groupNumber;
     private final double averageGrade;
     private final String recordBookNumber;
@@ -16,7 +17,7 @@ public class Student {
     public String getGroupNumber() { return groupNumber; }
     public double getAverageGrade() { return averageGrade; }
     public String getRecordBookNumber() { return recordBookNumber; }
-    
+
     public static class Builder {
         private String groupNumber;
         private double averageGrade;
@@ -48,9 +49,6 @@ public class Student {
                 throw new IllegalArgumentException("Record book number must be 6-10 digits");
             }
         }
-
-
-
 
         public Builder groupNumber(String groupNumber) {
             validateGroupNumber(groupNumber);
@@ -96,11 +94,28 @@ public class Student {
     }
 
     @Override
+    public int compareTo(Student otherStudent) {
+        int groupNumberComparison = this.groupNumber.compareTo(otherStudent.groupNumber);
+        if (groupNumberComparison != 0) {
+            return groupNumberComparison;
+        } else {
+            int averageGradeComparison = Double.compare(this.averageGrade, otherStudent.averageGrade);
+            if (averageGradeComparison != 0) {
+                return averageGradeComparison;
+            } else {
+                return this.recordBookNumber.compareTo(otherStudent.recordBookNumber);
+            }
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if(this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Double.compare(averageGrade, student.averageGrade) == 0 && Objects.equals(groupNumber, student.groupNumber) && Objects.equals(recordBookNumber, student.recordBookNumber);
+        return Double.compare(averageGrade, student.averageGrade) == 0 && Objects
+                .equals(groupNumber, student.groupNumber) && Objects
+                .equals(recordBookNumber, student.recordBookNumber);
     }
 
     @Override
