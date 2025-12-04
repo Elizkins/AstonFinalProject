@@ -1,0 +1,198 @@
+package org.secondgroup.customcollection;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+/**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
+ * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, but the
+ * maximum possible number of elements is known in advance. Our list based on array of elements with fixed length. It
+ * provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
+ * operations have O(n) time complexity. For our study project we realized here some base operations which should be
+ * sufficient for the educational purposes:<br>
+ * - adding a new element to the end of an array;<br>
+ * - adding a new value to position by index;<br>
+ * - adding a set of elements;<br>
+ * - remove an element by position (index);<br>
+ * - getting the element by position (index);<br>
+ * - replacing the element at position (index) with a new element;<br>
+ * - can be cast to a string;<br>
+ * - check whether the list is empty or not. The list is empty if its {@link #entriesCount} is 0.<br>
+ * - check whether it is possible to add more elements. Elements can be added if the {@link #entriesCount} is less than
+ * the {@link #elements} length;<br>
+ * - check out the list current size (how many elements contains);<br>
+ * - all stored elements can be queried as a standard array.*/
+
+public class FixedListOfElements<T> {
+
+    private Object[] elements;
+    private int entriesCount = 0;
+    private static final int DEFAULT_CAPACITY = 10;
+/** Initialization can be done as follows:
+ * - without specifying any arguments, in this case the number of elements is 10;
+ * - specifying the maximum number of array elements as a number;
+ * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
+ * maximum size of the current list becomes equal to the current size of the copied list */
+
+    public FixedListOfElements() {
+        this.elements = new Object[DEFAULT_CAPACITY];
+    }
+
+    public FixedListOfElements(int capacity) {
+        this.elements = new Object[capacity];
+    }
+
+    public FixedListOfElements(FixedListOfElements<T> fixArr) {
+        this.elements = Arrays.copyOf(fixArr.elements, fixArr.elements.length);
+        this.entriesCount = fixArr.entriesCount;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getByPosition(int position) {
+        if (position >= 0 && position < this.elements.length) {
+            return (T) this.elements[position];
+        } else {
+            throw new IllegalArgumentException("wrong position index");
+        }
+    }
+
+    public void replaceByPosition(T value, int position) {
+        if (position >= 0 && position < entriesCount) {
+            Object[] newarr = new Object[elements.length];
+            System.arraycopy(elements, 0, newarr, 0, position);
+            newarr[position] = value;
+            System.arraycopy(elements, position + 1, newarr, position + 1,
+                    elements.length - position - 1);
+            this.elements = newarr;
+
+        } else {
+            throw new IllegalArgumentException("неверное значение позиции");
+        }
+    }
+
+    public boolean isEmpty() {
+        return elements.length == 0;
+    }
+
+    public int showLength() {
+        return elements.length;
+    }
+
+    public int showValuesCount() {
+        return this.entriesCount;
+    }
+
+    public boolean checkIfAbleToAdd() {
+        return this.elements.length > this.entriesCount;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T[] getStandardArray(Class<T> classItself) {
+        if (entriesCount <= elements.length) {
+            T[] arr = (T[]) Array.newInstance(classItself, entriesCount);
+            System.arraycopy(elements, 0, arr, 0, entriesCount);
+            return arr;
+        } else {
+            return null;
+        }
+    }
+
+    public void addInTail(T value) {
+        if (entriesCount != elements.length) {
+            this.elements[entriesCount] = value;
+            entriesCount++;
+        }
+    }
+
+    public void addInTail(T[] values) {
+        if (entriesCount != elements.length && values.length <= (elements.length - entriesCount)) {
+            for (int i = 0; i < values.length; i++) {
+                elements[entriesCount] = values[i];
+                entriesCount++;
+            }
+        }
+    }
+
+    public void addInTail(FixedListOfElements<T> fixarr) {
+        if (this.entriesCount != this.elements.length && fixarr.entriesCount <= (this.elements.length - this.entriesCount)) {
+            for (int i = 0; i < fixarr.entriesCount; i++) {
+            this.elements[entriesCount] = fixarr.elements[i];
+            entriesCount++;
+            }
+        }
+    }
+
+    public void addInAnyPlace(T value, int index) {
+        if (entriesCount != elements.length) {
+            if (index >= 0 && index < this.entriesCount) {
+                Object[] newarr = new Object[elements.length];
+                System.arraycopy(elements, 0, newarr, 0, index);
+                newarr[index] = value;
+                System.arraycopy(elements, index, newarr, index + 1, elements.length - index - 1);
+                this.elements = newarr;
+                entriesCount++;
+
+            } else {
+                throw new IllegalArgumentException("Wrong index value");
+            }
+        }
+    }
+
+    public void addInAnyPlace(T[] values, int index) {
+        if (entriesCount != elements.length) {
+            if (index >= 0 && index < this.entriesCount && values.length <= (elements.length - entriesCount)) {
+                Object[] newarr = new Object[elements.length];
+                System.arraycopy(elements, 0, newarr, 0, index);
+                int tmpValCount = entriesCount;
+                int ind = index;
+                for (int i = 0; i < values.length; i++) {
+                    newarr[ind] = values[i];
+                    entriesCount++;
+                    ind++;
+                }
+                System.arraycopy(elements, index, newarr, index + values.length, tmpValCount - index);
+                this.elements = newarr;
+
+            } else {
+                throw new IllegalArgumentException("wrong index value or too long array trying to add");
+            }
+        }
+    }
+
+    public void addInAnyPlace(FixedListOfElements<T> values, int index) {
+        if (entriesCount != elements.length) {
+            if (index >= 0 && index < this.entriesCount && values.entriesCount <= (elements.length - entriesCount)) {
+                Object[] newarr = new Object[elements.length];
+                System.arraycopy(elements, 0, newarr, 0, index);
+                int tmpValCount = entriesCount;
+                int ind = index;
+                for (int i = 0; i < values.entriesCount; i++) {
+                    newarr[ind] = values.elements[i];
+                    entriesCount++;
+                    ind++;
+                }
+                System.arraycopy(elements, index, newarr, index + values.entriesCount, tmpValCount - index);
+                this.elements = newarr;
+
+            } else {
+                throw new IllegalArgumentException("wrong index value");
+            }
+        }
+    }
+
+    public void removeAtIndex(int index) {
+        if (index >= 0 && index < this.entriesCount) {
+            Object[] newarr = new Object[elements.length];
+            System.arraycopy(elements, 0, newarr, 0, index);
+            System.arraycopy(elements, index + 1, newarr, index, elements.length - index - 1);
+            this.elements = newarr;
+            entriesCount--;
+
+        } else {
+            throw new IllegalArgumentException("wrong index value");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(elements);
+    }
+}
