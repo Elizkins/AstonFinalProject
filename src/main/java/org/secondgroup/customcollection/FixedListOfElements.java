@@ -2,6 +2,7 @@ package org.secondgroup.customcollection;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Comparator;
 /**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
  * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, but the
  * maximum possible number of elements is known in advance. Our list based on array of elements with fixed length. It
@@ -19,8 +20,9 @@ import java.util.Arrays;
  * - check whether it is possible to add more elements. Elements can be added if the {@link #entriesCount} is less than
  * the {@link #elements} length;<br>
  * - check out the list current size (how many elements contains);<br>
- * - all stored elements can be queried as a standard array.*/
-
+ * - all stored elements can be queried as a standard array;<br>
+ * - sort, which needs comparator;<br>
+ * - binary search, also needs comparator.*/
 public class FixedListOfElements<T> {
 
     private Object[] elements;
@@ -31,7 +33,6 @@ public class FixedListOfElements<T> {
  * - specifying the maximum number of array elements as a number;
  * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
  * maximum size of the current list becomes equal to the current size of the copied list */
-
     public FixedListOfElements() {
         this.elements = new Object[DEFAULT_CAPACITY];
     }
@@ -50,7 +51,7 @@ public class FixedListOfElements<T> {
         if (position >= 0 && position < this.elements.length) {
             return (T) this.elements[position];
         } else {
-            throw new IllegalArgumentException("wrong position index");
+            throw new IllegalArgumentException("wrong index value");
         }
     }
 
@@ -64,7 +65,7 @@ public class FixedListOfElements<T> {
             this.elements = newarr;
 
         } else {
-            throw new IllegalArgumentException("неверное значение позиции");
+            throw new IllegalArgumentException("wrong index value");
         }
     }
 
@@ -194,5 +195,30 @@ public class FixedListOfElements<T> {
     @Override
     public String toString() {
         return Arrays.toString(elements);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void sort(Comparator<T> compar) {
+        Arrays.sort((T[]) elements, 0, entriesCount, compar);
+    }
+
+    @SuppressWarnings("unchecked")
+    public int binarySearch(T value, Comparator<T> compar) {
+        this.sort(compar); //binary search needs sorted array
+        int low = 0;
+        int high = elements.length - 1;
+
+        while (low <= high) {
+            int mid = (low + high) /2;
+            int cmp = compar.compare((T) elements[mid], value);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid; // found element
+            }
+        }
+        return -1;
     }
 }
