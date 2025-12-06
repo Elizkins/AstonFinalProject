@@ -1,14 +1,12 @@
 package org.secondgroup.menu;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Menu {
     public Menu(String text, String notHandledText){
         this.text = text;
         this.notHandledText = notHandledText;
-        this.handlers = new LinkedList<>();
+        this.handlers = new HashSet<>();
     }
 
     public void run(){
@@ -27,9 +25,9 @@ public class Menu {
 
     public void addHandler(Handler handler){
         handlers.add(handler);
-    };
+    }
 
     private String text;
-    private List<Handler> handlers;
+    private Set<Handler> handlers;
     private String notHandledText;
 }
