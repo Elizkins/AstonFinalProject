@@ -57,14 +57,14 @@ public class StudentRepository {
 
         while (added < count && failed < 5) { // максимум 100 попыток на ошибку
             try {
-                String group = String.valueOf(rnd.nextInt(1, 1000));
+                String group = String.valueOf(1 + rnd.nextInt(100));
 
                 double grade = Math.round((2.0 + rnd.nextDouble() * 3.0) * 100.0) / 100.0;
 
                 int digits = 6 + rnd.nextInt(5); // 6–10 цифр
                 long minNum = (long) Math.pow(10, digits - 1);
                 long maxNum = (long) Math.pow(10, digits);
-                String recordBook = String.format("%0" + digits + "d", rnd.nextLong(minNum, maxNum));
+                String recordBook = String.format("%0" + digits + "d", minNum + (rnd.nextLong()%maxNum));
 
                 Student s = new Student.Builder()
                         .groupNumber(group)

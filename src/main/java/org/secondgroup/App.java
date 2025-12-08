@@ -30,10 +30,10 @@ public class App
                 "1. Ввод коллекции\n" +
                 "2. Вывод коллекции\n" +
                 "3. Сортировка коллекции\n" +
-                "4. Выход", "Некорректный ввод. Введите число от 1 до 4");
-        mainMenu.addHandler(new Handler("4", () -> {
-            isRunning[0] = false;
-        }));
+                "4. Очистка коллекции\n" +
+                "q. Выход", "Некорректный ввод. Введите число от 1 до 4");
+        mainMenu.addHandler(new Handler("q", () -> isRunning[0] = false));
+        mainMenu.addHandler(new Handler("4", studentRepository::clear));
 
         //выбор способа ввода
         Menu inputMenu = new Menu("Выберите способ ввода\n" +
@@ -45,14 +45,12 @@ public class App
             System.out.println("Введите название файла");
             Scanner scanner = new Scanner(System.in);
             String file = scanner.nextLine();
-            scanner.close();
             studentRepository.loadFromFile(file);
         }));
         inputMenu.addHandler(new Handler("3", () -> {
             System.out.println("Введите число студентов");
             Scanner scanner = new Scanner(System.in);
             int number = scanner.nextInt();
-            scanner.close();
             studentRepository.addRandomStudents(number);
         }));
 
@@ -65,7 +63,6 @@ public class App
             System.out.println("Введите название файла");
             Scanner scanner = new Scanner(System.in);
             String file = scanner.nextLine();
-            scanner.close();
             studentRepository.saveToFile(file);
         }));
 

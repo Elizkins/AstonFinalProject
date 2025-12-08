@@ -13,10 +13,9 @@ public class Menu {
         System.out.println(text);
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine().trim();
-        scanner.close();
         handlers.stream()
                 .filter(handler -> handler.handle(input)) //обрабатываем ввод
-                .findAny()
+                .findFirst()
                 .orElseGet(() -> {
                     System.out.println(notHandledText); //Если не значение не обработалось, выводим notHandledText
                     return null;
