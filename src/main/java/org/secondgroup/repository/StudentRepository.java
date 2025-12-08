@@ -64,7 +64,9 @@ public class StudentRepository {
                 int digits = 6 + rnd.nextInt(5); // 6–10 цифр
                 long minNum = (long) Math.pow(10, digits - 1);
                 long maxNum = (long) Math.pow(10, digits);
-                String recordBook = String.format("%0" + digits + "d", minNum + (rnd.nextLong()%maxNum));
+                long randomLong = rnd.nextLong();
+                randomLong = (randomLong == Long.MIN_VALUE) ? 0 : Math.abs(randomLong);
+                String recordBook = String.format("%0" + digits + "d", minNum + (randomLong % (maxNum-minNum + 1)));
 
                 Student s = new Student.Builder()
                         .groupNumber(group)
