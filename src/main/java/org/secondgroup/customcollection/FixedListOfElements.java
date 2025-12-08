@@ -227,26 +227,11 @@ public class FixedListOfElements<T> {
         return -1;
     }
 
-    public static void main(String[] args) {
-//        FixedListOfElements<Integer> list = new FixedListOfElements<>(1000);
-//        for (int i = 0; i < 500; i++) {
-//            list.addInTail(1);
-//            list.addInTail(2);
-//        }
-//
-//        System.out.println(list.toString());
-//        long start = System.currentTimeMillis();
-//        list.countOfElement(1, 1);
-//        long finish = System.currentTimeMillis();
-//        long timeElapsed = finish - start;
-//        System.out.println(timeElapsed);
-    }
-
-    public void countOfElement(T element, int threadCount) {
+    public void countOccurrencesParallel(T element, int threadCount) {
         int elementCount = 0;
 
         if (threadCount <= 1) {
-            elementCount = sequentialCount(element);
+            elementCount = countOccurrencesSequential(element);
             System.out.println("Количество вхождений " + element + " равно: " + elementCount);
             return;
         }
@@ -255,7 +240,7 @@ public class FixedListOfElements<T> {
             threadCount = Runtime.getRuntime().availableProcessors() - 1;
 
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-        int chunkSize = (int) Math.ceil((double) entriesCount / threadCount);
+        int chunkSize = Math.max(1, entriesCount / threadCount);
 
         List<Future<Integer>> futures = new ArrayList<>();
         for (int thread = 0; thread < threadCount; thread++) {
@@ -263,7 +248,8 @@ public class FixedListOfElements<T> {
             if (startIndex >= entriesCount) {
                 break;
             }
-            Callable<Integer> task = getTask(element, startIndex, chunkSize);
+            int endIndex = (thread == threadCount - 1) ? entriesCount : Math.min((thread + 1) * chunkSize, entriesCount);
+            Callable<Integer> task = getTask(element, startIndex, endIndex);
             futures.add(executorService.submit(task));
         }
 
@@ -280,7 +266,7 @@ public class FixedListOfElements<T> {
         System.out.println("Количество вхождений " + element + " равно: " + elementCount);
     }
 
-    public int sequentialCount(T element) {
+    public int countOccurrencesSequential(T element) {
         int n = 0;
         for (int i = 0; i < entriesCount; i++) {
             if (Objects.equals(elements[i], element)) {
@@ -290,8 +276,7 @@ public class FixedListOfElements<T> {
         return n;
     }
 
-    private Callable<Integer> getTask(T element, int startIndex, int chunkSize) {
-        int endIndex = Math.min(startIndex + chunkSize, entriesCount);
+    private Callable<Integer> getTask(T element, int startIndex, int endIndex) {
         return () -> {
             int n = 0;
             for (int j = startIndex; j < endIndex; j++) {
