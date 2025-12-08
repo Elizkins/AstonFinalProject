@@ -1,9 +1,11 @@
 package org.secondgroup.customcollection;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Comparator;
-/**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
+import java.util.*;
+import java.util.concurrent.*;
+
+/**
+ * Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
  * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, but the
  * maximum possible number of elements is known in advance. Our list based on array of elements with fixed length. It
  * provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
@@ -22,17 +24,21 @@ import java.util.Comparator;
  * - check out the list current size (how many elements contains);<br>
  * - all stored elements can be queried as a standard array;<br>
  * - sort, which needs comparator;<br>
- * - binary search, also needs comparator.*/
+ * - binary search, also needs comparator.
+ */
 public class FixedListOfElements<T> {
 
     private Object[] elements;
     private int entriesCount = 0;
     private static final int DEFAULT_CAPACITY = 10;
-/** Initialization can be done as follows:<br>
- * - without specifying any arguments, in this case the number of elements is 10;<br>
- * - specifying the maximum number of array elements as a number;<br>
- * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
- * maximum size of the current list becomes equal to the current size of the copied list */
+
+    /**
+     * Initialization can be done as follows:<br>
+     * - without specifying any arguments, in this case the number of elements is 10;<br>
+     * - specifying the maximum number of array elements as a number;<br>
+     * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
+     * maximum size of the current list becomes equal to the current size of the copied list
+     */
     public FixedListOfElements() {
         this.elements = new Object[DEFAULT_CAPACITY];
     }
@@ -115,8 +121,8 @@ public class FixedListOfElements<T> {
     public void addInTail(FixedListOfElements<T> fixarr) {
         if (this.entriesCount != this.elements.length && fixarr.entriesCount <= (this.elements.length - this.entriesCount)) {
             for (int i = 0; i < fixarr.entriesCount; i++) {
-            this.elements[entriesCount] = fixarr.elements[i];
-            entriesCount++;
+                this.elements[entriesCount] = fixarr.elements[i];
+                entriesCount++;
             }
         }
     }
@@ -132,7 +138,7 @@ public class FixedListOfElements<T> {
                 entriesCount++;
 
             } else {
-                throw new IllegalArgumentException("Wrong index value");
+                throw new IllegalArgumentException("wrong index value");
             }
         }
     }
@@ -186,7 +192,6 @@ public class FixedListOfElements<T> {
             System.arraycopy(elements, index + 1, newarr, index, elements.length - index - 1);
             this.elements = newarr;
             entriesCount--;
-
         } else {
             throw new IllegalArgumentException("wrong index value");
         }
@@ -209,7 +214,7 @@ public class FixedListOfElements<T> {
         int high = elements.length - 1;
 
         while (low <= high) {
-            int mid = (low + high) /2;
+            int mid = (low + high) / 2;
             int cmp = compar.compare((T) elements[mid], value);
             if (cmp < 0) {
                 low = mid + 1;
@@ -220,5 +225,81 @@ public class FixedListOfElements<T> {
             }
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+//        FixedListOfElements<Integer> list = new FixedListOfElements<>(1000);
+//        for (int i = 0; i < 500; i++) {
+//            list.addInTail(1);
+//            list.addInTail(2);
+//        }
+//
+//        System.out.println(list.toString());
+//        long start = System.currentTimeMillis();
+//        list.countOfElement(1, 1);
+//        long finish = System.currentTimeMillis();
+//        long timeElapsed = finish - start;
+//        System.out.println(timeElapsed);
+    }
+
+    public void countOfElement(T element, int threadCount) {
+        int elementCount = 0;
+
+        if (threadCount <= 1) {
+            elementCount = sequentialCount(element);
+            System.out.println("Количество вхождений " + element + " равно: " + elementCount);
+            return;
+        }
+
+        if(threadCount >= Runtime.getRuntime().availableProcessors() - 1)
+            threadCount = Runtime.getRuntime().availableProcessors() - 1;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        int chunkSize = (int) Math.ceil((double) entriesCount / threadCount);
+
+        List<Future<Integer>> futures = new ArrayList<>();
+        for (int thread = 0; thread < threadCount; thread++) {
+            int startIndex = thread * chunkSize;
+            if (startIndex >= entriesCount) {
+                break;
+            }
+            Callable<Integer> task = getTask(element, startIndex, chunkSize);
+            futures.add(executorService.submit(task));
+        }
+
+        for (Future<Integer> future : futures) {
+            try {
+                elementCount += future.get();
+            } catch (ExecutionException | InterruptedException e) {
+                System.out.println("Ошибка потока: " + e.getMessage());
+            }
+        }
+
+        executorService.shutdown();
+
+        System.out.println("Количество вхождений " + element + " равно: " + elementCount);
+    }
+
+    public int sequentialCount(T element) {
+        int n = 0;
+        for (int i = 0; i < entriesCount; i++) {
+            if (Objects.equals(elements[i], element)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    private Callable<Integer> getTask(T element, int startIndex, int chunkSize) {
+        int endIndex = Math.min(startIndex + chunkSize, entriesCount);
+        return () -> {
+            int n = 0;
+            for (int j = startIndex; j < endIndex; j++) {
+                if (Objects.equals(elements[j], element)) {
+                    n++;
+                }
+            }
+            return n;
+        };
     }
 }
