@@ -1,6 +1,9 @@
+package org.secondgroup.repository;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import org.secondgroup.student.model.Student;
 
 public class StudentRepository {
 
@@ -189,5 +192,9 @@ public class StudentRepository {
 
     public void clear() {
         students.clear();
+    }
+
+    public void addStudents(Student[] students){
+        this.students.addAll(Arrays.asList(students));
     }
 }
