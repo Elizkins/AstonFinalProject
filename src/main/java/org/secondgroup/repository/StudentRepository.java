@@ -1,3 +1,6 @@
+package org.secondgroup.repository;
+import org.secondgroup.student.model.Student;
+
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;

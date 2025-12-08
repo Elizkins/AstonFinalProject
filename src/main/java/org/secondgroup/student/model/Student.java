@@ -75,14 +75,14 @@ public class Student implements Comparable<Student>{
             if (recordBookNumber == null) {
                 throw new IllegalStateException("Требуется номер книги учета");
             }
+            //Eliza: Сюда код не попадает, в validateGroupNumber ошибка пробрасывается только.
             if (groupNumber.trim().isEmpty()) {
                 throw new IllegalStateException("Номер группы не может быть пустым");
             }
-
+            //Eliza: Аналогично.
             if (recordBookNumber.trim().isEmpty()) {
-                throw new IllegalStateException("Номер зачетной книги не может быть пустым");
+                throw new IllegalStateException("Номер группы не может быть пустым");
             }
-
             return new Student(this);
         }
     }
