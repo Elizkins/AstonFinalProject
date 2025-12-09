@@ -9,9 +9,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 /** This class provides static methods to get supplier, needed in
  * {@link java.util.stream.Stream#collect(Supplier, BiConsumer, BiConsumer)} when filling custom collections. It helps
- * to create new collection, also with specified size. Anyway, such collection will accept only the number of elements
- * you specified when creating fixed collection. Other incoming elements will simply be ignored. In case of unknown or
- * unpredictable number of incoming elements - better use an {@link EnhancedModArray} without specifying size. */
+ * to create and fill new collection, also with specified size. Fixed collection will accept only the number of elements
+ * you specified when using {@link #getStudentFixedListOfElementsCollector(int)}. Other incoming elements will simply be
+ * ignored. In case of unknown or unpredictable number of incoming elements - better use a
+ * {@link #getStudentEnhancedModArrayCollector()} without specifying size. */
 public class StudentCollector {
 
     public static Collector<Student, ?, FixedListOfElements<Student>> getStudentFixedListOfElementsCollector(int len) {

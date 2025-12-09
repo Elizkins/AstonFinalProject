@@ -266,10 +266,10 @@ public class FixedListOfElements<T> implements Iterable<T> {
     }
 
     public static <T> FixedListOfElements<T> createCustomCol() {
-        return new FixedListOfElements<T>();
+        return new FixedListOfElements<>();
     }
 
     public static <T> FixedListOfElements<T> createMyCustomCol(T[] elements) {
-        return new FixedListOfElements<T>(elements);
+        return new FixedListOfElements<>(elements);
     }
 }
