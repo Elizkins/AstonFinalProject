@@ -1,4 +1,6 @@
-package org.secondgroup.student.model;
+package org.secondgroup.sort.comparators;
+
+import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;
 

@@ -34,6 +34,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
 /** Initialization can be done as follows:<br>
  * - without specifying any arguments, in this case the number of elements is 10;<br>
  * - specifying the maximum number of array elements as a number;<br>
+ * - when specifying various number of arguments or by an array of objects;<br>
  * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
  * maximum size of the current list becomes equal to the current size of the copied list */
     public FixedListOfElements() {
@@ -42,6 +43,14 @@ public class FixedListOfElements<T> implements Iterable<T> {
 
     public FixedListOfElements(int capacity) {
         this.elements = new Object[capacity];
+    }
+
+    @SuppressWarnings("unchecked")
+    public FixedListOfElements(T ... elements) {
+        Object[] newarr = new Object[elements.length + 8];
+        System.arraycopy(elements, 0, newarr, 0, elements.length);
+        this.elements = newarr;
+        this.entriesCount = elements.length;
     }
 
     public FixedListOfElements(FixedListOfElements<T> fixArr) {
@@ -233,7 +242,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
         return new CustIterator();
     }
 
-    private class CustIterator implements Iterator<T> {
+        private class CustIterator implements Iterator<T> {
 
         private int currentIndex = -1;
         @Override
@@ -254,5 +263,13 @@ public class FixedListOfElements<T> implements Iterable<T> {
         public void remove() {
             removeAtIndex(currentIndex);
         }
+    }
+
+    public static <T> FixedListOfElements<T> createCustomCol() {
+        return new FixedListOfElements<T>();
+    }
+
+    public static <T> FixedListOfElements<T> createMyCustomCol(T[] elements) {
+        return new FixedListOfElements<T>(elements);
     }
 }

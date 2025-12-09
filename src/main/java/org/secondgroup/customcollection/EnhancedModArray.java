@@ -314,4 +314,12 @@ public class EnhancedModArray<T> implements Iterable<T> {
             removeAtIndex(currentIndex);
         }
     }
+
+    public static <T> EnhancedModArray<T> createCustomCol() {
+        return new EnhancedModArray<>();
+    }
+
+    public static <T> EnhancedModArray<T> createMyCustomCol(T[] elements) {
+        return new EnhancedModArray<>(elements);
+    }
 }
