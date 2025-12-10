@@ -31,6 +31,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
     private Object[] elements;
     private int entriesCount = 0;
     private static final int DEFAULT_CAPACITY = 10;
+    public static final int MAX_CAPACITY = 10_000;
 /** Initialization can be done as follows:<br>
  * - without specifying any arguments, in this case the number of elements is 10;<br>
  * - specifying the maximum number of array elements as a number;<br>
@@ -56,6 +57,17 @@ public class FixedListOfElements<T> implements Iterable<T> {
     public FixedListOfElements(FixedListOfElements<T> fixArr) {
         this.elements = Arrays.copyOf(fixArr.elements, fixArr.elements.length);
         this.entriesCount = fixArr.entriesCount;
+    }
+
+    public void changeCapacity(int capacity){
+        if(capacity > entriesCount){
+            Object[] newarr = new Object[capacity];
+            System.arraycopy(elements, 0, newarr, 0, entriesCount);
+            this.elements = newarr;
+        }
+        else{
+            throw new IllegalArgumentException("capacity can't be less than current entries count");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -93,6 +105,10 @@ public class FixedListOfElements<T> implements Iterable<T> {
         return this.entriesCount;
     }
 
+    public int showAvailableCount(){
+        return elements.length - entriesCount;
+    }
+
     public boolean checkIfAbleToAdd() {
         return this.elements.length > this.entriesCount;
     }
@@ -104,8 +120,13 @@ public class FixedListOfElements<T> implements Iterable<T> {
             System.arraycopy(elements, 0, arr, 0, entriesCount);
             return arr;
         } else {
-            return null;
+            throw new IllegalArgumentException("incorrect argument entriesCount <= elements.length");
         }
+    }
+
+    public void clear(){
+        this.elements = new Object[elements.length];
+        this.entriesCount = 0;
     }
 
     public void addInTail(T value) {
@@ -144,7 +165,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
                 entriesCount++;
 
             } else {
-                throw new IllegalArgumentException("Wrong index value");
+                throw new IllegalArgumentException("wrong index value");
             }
         }
     }

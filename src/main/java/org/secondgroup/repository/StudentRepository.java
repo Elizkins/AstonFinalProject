@@ -1,12 +1,13 @@
 package org.secondgroup.repository;
 
+import org.secondgroup.customcollection.FixedListOfElements;
+import org.secondgroup.customcollection.processing.StudentsFileToCollection;
+import org.secondgroup.sort.TestObjectForStrategiesUse;
 import org.secondgroup.student.model.Student;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -14,19 +15,50 @@ import java.util.*;
 public class StudentRepository {
     private static final Scanner scanner = new Scanner(System.in);
     private static final String DEFAULT_FILE_PATH = "students.txt";
-    private final List<Student> students = new ArrayList<>();
+    private final FixedListOfElements<Student> students;
+
+    public StudentRepository() {
+        students = new FixedListOfElements<>(30);
+    }
+
+    private int readInt(int minValue, int maxValue, String innerMessage, String errorMessage) {
+        while (true) {
+            System.out.println(innerMessage);
+
+            if (!scanner.hasNextInt()) {
+                System.out.println(errorMessage);
+                scanner.next();
+                continue;
+            }
+
+            int value = scanner.nextInt();
+            scanner.nextLine();
+
+            if (value >= minValue && value <= maxValue) {
+                return value;
+            }
+
+            System.out.println(errorMessage);
+        }
+    }
+
+    public void changeCapacity() {
+        System.out.println("Текущая вместимость: " + students.showLength());
+
+        int capacity = readInt(students.showValuesCount(), FixedListOfElements.MAX_CAPACITY,
+                "Введите новую вместимость: ",
+                "Ошибка: введите целое число (" + students.showValuesCount() + " - " + FixedListOfElements.MAX_CAPACITY + ")");
+
+        students.changeCapacity(capacity);
+
+        System.out.println("Текущая вместимость: " + students.showLength());
+    }
 
     // 1. Добавление вручную
     public void addStudentManually() {
-        System.out.println("Введите число студентов: ");
-
-        while (!scanner.hasNextInt()) {
-            System.out.println("Ошибка: введите целое число!");
-            scanner.next();
-            System.out.println("Введите число студентов: ");
-        }
-        int count = scanner.nextInt();
-        scanner.nextLine();
+        int count = readInt(0, students.showAvailableCount(),
+                "Введите число студентов: ",
+                "Ошибка: введите целое число (0 - " + students.showAvailableCount() + ")");
 
         try {
             for (int i = 1; i <= count; i++) {
@@ -44,8 +76,7 @@ public class StudentRepository {
                         .averageGrade(grade)
                         .recordBookNumber(recordBook)
                         .build();
-
-                students.add(student);
+                students.addInTail(student);
             }
             System.out.println("Успешно добавлено студентов: " + count);
         } catch (NumberFormatException e) {
@@ -56,24 +87,10 @@ public class StudentRepository {
     }
 
     // 2. Добавление случайных студентов
-    // ======================= Рандом (с правильной обработкой ошибок) =======================
     public void addRandomStudents() {
-        System.out.println("Введите число студентов: ");
-        int count = 0;
-
-        while (!scanner.hasNextInt()) {
-            System.out.println("Ошибка: введите целое число!");
-            scanner.next();
-            System.out.println("Введите число студентов: ");
-        }
-
-        count = scanner.nextInt();
-        scanner.nextLine();
-
-        if (count <= 0) {
-            System.out.println("Количество должно быть больше 0.");
-            return;
-        }
+        int count = readInt(0, students.showAvailableCount(),
+                "Введите число студентов: ",
+                "Ошибка: введите целое число (0 - " + students.showAvailableCount() + ")");
 
         Random rnd = new Random();
         int added = 0;
@@ -99,7 +116,7 @@ public class StudentRepository {
                         .recordBookNumber(recordBook)
                         .build();
 
-                students.add(s);
+                students.addInTail(s);
                 added++;
 
             } catch (IllegalArgumentException e) {
@@ -140,46 +157,8 @@ public class StudentRepository {
         System.out.println("Введите название файла");
         String filePath = scanner.nextLine();
 
-        String path = (filePath == null || filePath.isBlank()) ? DEFAULT_FILE_PATH : filePath;
-        Path p = Paths.get(path);
-
-        if (!Files.exists(p)) {
-            System.out.println("Файл не найден: " + path);
-            return;
-        }
-
-        int loaded = 0;
-        try (BufferedReader br = Files.newBufferedReader(p)) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
-
-                String[] parts = line.split(";");
-                if (parts.length != 3) {
-                    System.out.println("Студент пропущен - ошибка в данных файла: The number of parameters is not equal to 3");
-                    continue;
-                }
-
-                try {
-                    Student s = new Student.Builder()
-                            .groupNumber(parts[0].trim())
-                            .averageGrade(Double.parseDouble(parts[1].trim()))
-                            .recordBookNumber(parts[2].trim())
-                            .build();
-                    students.add(s);
-                    loaded++;
-                } catch (IllegalStateException | IllegalArgumentException e) {
-                    System.out.println("Студент пропущен - ошибка в данных файла: " + e.getMessage());
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Ошибка чтения файла: " + e.getMessage());
-            return;
-        } catch (Exception e) {
-            System.out.println("Ошибка в данных файла: " + e.getMessage());
-        }
-        System.out.println("Успешно загружено студентов: " + loaded);
+        students.addInTail(StudentsFileToCollection.processFile(filePath, students.showAvailableCount()));
+        System.out.println("Успешно загружено студентов: " + students.showValuesCount());
     }
 
     // 4. Сохранение в файл (режим append)
@@ -207,7 +186,7 @@ public class StudentRepository {
                         s.getAverageGrade(),
                         s.getRecordBookNumber()));
             }
-            System.out.println("Успешно добавлено " + students.size() + " записей в файл: " + path);
+            System.out.println("Успешно добавлено " + students.showValuesCount() + " записей в файл: " + path);
         } catch (IOException e) {
             System.out.println("Ошибка записи в файл: " + e.getMessage());
         }
@@ -219,22 +198,25 @@ public class StudentRepository {
             System.out.println("Список студентов пуст.");
             return;
         }
-        System.out.println("=== Список студентов (" + students.size() + ") ===");
-        for (int i = 0; i < students.size(); i++) {
-            System.out.println((i + 1) + ". " + students.get(i));
+        System.out.println("=== Список студентов (" + students.showValuesCount() + ") ===");
+        for (int i = 0; i < students.showValuesCount(); i++) {
+            System.out.println((i + 1) + ". " + students.getByPosition(i));
         }
     }
 
     // Геттер для остальных модулей (сортировка и т.д.)
-    public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
+    public Student[] getStudents() {
+        return students.getStandardArray(Student.class);
+    }
+
+    public void sortStudents(TestObjectForStrategiesUse strategy){
+        Student[] students = getStudents();
+        strategy.execSort(students);
+        clear();
+        this.students.addInTail(students);
     }
 
     public void clear() {
         students.clear();
-    }
-
-    public void addStudents(Student[] students) {
-        this.students.addAll(Arrays.asList(students));
     }
 }
