@@ -3,10 +3,12 @@ package org.secondgroup.customcollection;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 /**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
- * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, but the
- * maximum possible number of elements is known in advance. Our list based on array of elements with fixed length. It
- * provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
+ * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, replaced, but
+ * the maximum possible number of elements is known in advance. Our list based on array of elements with fixed length.
+ * It provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
  * operations have O(n) time complexity. For our study project we realized here some base operations which should be
  * sufficient for the educational purposes:<br>
  * - adding a new element to the end of an array;<br>
@@ -22,8 +24,9 @@ import java.util.Comparator;
  * - check out the list current size (how many elements contains);<br>
  * - all stored elements can be queried as a standard array;<br>
  * - sort, which needs comparator;<br>
- * - binary search, also needs comparator.*/
-public class FixedListOfElements<T> {
+ * - binary search, also needs comparator;<br>
+ * - iterator, so you can use foreach cycle to iterate on this collection.*/
+public class FixedListOfElements<T> implements Iterable<T> {
 
     private Object[] elements;
     private int entriesCount = 0;
@@ -31,6 +34,7 @@ public class FixedListOfElements<T> {
 /** Initialization can be done as follows:<br>
  * - without specifying any arguments, in this case the number of elements is 10;<br>
  * - specifying the maximum number of array elements as a number;<br>
+ * - when specifying various number of arguments or by an array of objects;<br>
  * - when specifying another {@link FixedListOfElements}, in this case all values of the specified list are copied, and the
  * maximum size of the current list becomes equal to the current size of the copied list */
     public FixedListOfElements() {
@@ -39,6 +43,14 @@ public class FixedListOfElements<T> {
 
     public FixedListOfElements(int capacity) {
         this.elements = new Object[capacity];
+    }
+
+    @SuppressWarnings("unchecked")
+    public FixedListOfElements(T ... elements) {
+        Object[] newarr = new Object[elements.length + 8];
+        System.arraycopy(elements, 0, newarr, 0, elements.length);
+        this.elements = newarr;
+        this.entriesCount = elements.length;
     }
 
     public FixedListOfElements(FixedListOfElements<T> fixArr) {
@@ -204,21 +216,60 @@ public class FixedListOfElements<T> {
 
     @SuppressWarnings("unchecked")
     public int binarySearch(T value, Comparator<T> compar) {
+        if (elements == null || entriesCount == 0) {
+            return -1;
+        }
         this.sort(compar); //binary search needs sorted array
         int low = 0;
-        int high = elements.length - 1;
+        int high = entriesCount - 1;
 
         while (low <= high) {
-            int mid = (low + high) /2;
-            int cmp = compar.compare((T) elements[mid], value);
+            int mid = low + (high - low) / 2;
+            int cmp = compar.compare(value, (T) elements[mid]);
             if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
                 high = mid - 1;
+            } else if (cmp > 0) {
+                low = mid + 1;
             } else {
                 return mid; // found element
             }
         }
         return -1;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new CustIterator();
+    }
+
+        private class CustIterator implements Iterator<T> {
+
+        private int currentIndex = -1;
+        @Override
+        public boolean hasNext() {
+            return currentIndex + 1 < entriesCount;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return (T) elements[++currentIndex];
+        }
+
+        @Override
+        public void remove() {
+            removeAtIndex(currentIndex);
+        }
+    }
+
+    public static <T> FixedListOfElements<T> createCustomCol() {
+        return new FixedListOfElements<>();
+    }
+
+    public static <T> FixedListOfElements<T> createMyCustomCol(T[] elements) {
+        return new FixedListOfElements<>(elements);
     }
 }
