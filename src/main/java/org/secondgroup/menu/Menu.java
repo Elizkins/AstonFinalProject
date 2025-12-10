@@ -1,15 +1,21 @@
 package org.secondgroup.menu;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Menu {
-    public Menu(String text, String notHandledText){
+    private String text;
+    private Set<Handler> handlers;
+    private String notHandledText;
+
+    public Menu(String text, String notHandledText) {
         this.text = text;
         this.notHandledText = notHandledText;
         this.handlers = new HashSet<>();
     }
 
-    public void run(){
+    public void run() {
         System.out.println(text);
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine().trim();
@@ -22,11 +28,8 @@ public class Menu {
                 });
     }
 
-    public void addHandler(Handler handler){
+    public void addHandler(Handler handler) {
         handlers.add(handler);
-    }
 
-    private String text;
-    private Set<Handler> handlers;
-    private String notHandledText;
+    }
 }

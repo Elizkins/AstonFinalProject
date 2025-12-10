@@ -1,39 +1,53 @@
 package org.secondgroup.repository;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
 import org.secondgroup.student.model.Student;
 
-public class StudentRepository {
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 
-    private final List<Student> students = new ArrayList<>();
+public class StudentRepository {
+    private static final Scanner scanner = new Scanner(System.in);
     private static final String DEFAULT_FILE_PATH = "students.txt";
+    private final List<Student> students = new ArrayList<>();
 
     // 1. Добавление вручную
     public void addStudentManually() {
-        Scanner sc = new Scanner(System.in);
+        System.out.println("Введите число студентов: ");
 
-        System.out.println("\nДобавление студента вручную");
+        while (!scanner.hasNextInt()) {
+            System.out.println("Ошибка: введите целое число!");
+            scanner.next();
+            System.out.println("Введите число студентов: ");
+        }
+        int count = scanner.nextInt();
+        scanner.nextLine();
+
         try {
-            System.out.print("Номер группы: ");
-            String group = sc.nextLine().trim();
+            for (int i = 1; i <= count; i++) {
+                System.out.print("Добавление студента " + i + " вручную\n" + "Номер группы (1-6 символов): ");
+                String group = scanner.nextLine().trim();
 
-            System.out.print("Средний балл (0.0 – 5.0): ");
-            double grade = Double.parseDouble(sc.nextLine().trim());
+                System.out.print("Средний балл (0.0 – 5.0): ");
+                double grade = Double.parseDouble(scanner.nextLine().trim());
 
-            System.out.print("Номер зачётной книжки (6-10 цифр): ");
-            String recordBook = sc.nextLine().trim();
+                System.out.print("Номер зачётной книжки (6-10 цифр): ");
+                String recordBook = scanner.nextLine().trim();
 
-            Student student = new Student.Builder()
-                    .groupNumber(group)
-                    .averageGrade(grade)
-                    .recordBookNumber(recordBook)
-                    .build();
+                Student student = new Student.Builder()
+                        .groupNumber(group)
+                        .averageGrade(grade)
+                        .recordBookNumber(recordBook)
+                        .build();
 
-            students.add(student);
-            System.out.println("Студент успешно добавлен.");
-
+                students.add(student);
+            }
+            System.out.println("Успешно добавлено студентов: " + count);
         } catch (NumberFormatException e) {
             System.out.println("Ошибка: средний балл должен быть числом.");
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -43,7 +57,19 @@ public class StudentRepository {
 
     // 2. Добавление случайных студентов
     // ======================= Рандом (с правильной обработкой ошибок) =======================
-    public void addRandomStudents(int count) {
+    public void addRandomStudents() {
+        System.out.println("Введите число студентов: ");
+        int count = 0;
+
+        while (!scanner.hasNextInt()) {
+            System.out.println("Ошибка: введите целое число!");
+            scanner.next();
+            System.out.println("Введите число студентов: ");
+        }
+
+        count = scanner.nextInt();
+        scanner.nextLine();
+
         if (count <= 0) {
             System.out.println("Количество должно быть больше 0.");
             return;
@@ -55,18 +81,17 @@ public class StudentRepository {
 
         System.out.println("Генерируем " + count + " случайных студентов...");
 
-        while (added < count && failed < 5) { // максимум 100 попыток на ошибку
+        while (added < count) { // максимум 100 попыток на ошибку
             try {
-                String group = String.valueOf(1 + rnd.nextInt(100));
+                String group = String.valueOf(rnd.nextInt(1, 999999));
 
                 double grade = Math.round((2.0 + rnd.nextDouble() * 3.0) * 100.0) / 100.0;
 
                 int digits = 6 + rnd.nextInt(5); // 6–10 цифр
                 long minNum = (long) Math.pow(10, digits - 1);
                 long maxNum = (long) Math.pow(10, digits);
-                long randomLong = rnd.nextLong();
-                randomLong = (randomLong == Long.MIN_VALUE) ? 0 : Math.abs(randomLong);
-                String recordBook = String.format("%0" + digits + "d", minNum + (randomLong % (maxNum-minNum + 1)));
+
+                String recordBook = String.format("%0" + digits + "d", rnd.nextLong(minNum, maxNum));
 
                 Student s = new Student.Builder()
                         .groupNumber(group)
@@ -84,8 +109,10 @@ public class StudentRepository {
                 System.out.println("Попытка повторить с новыми данными...");
 
                 // Можно добавить задержку, чтобы не спамить консоль
-                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ignored) {
+                }
             } catch (Exception e) {
                 // Любая другая неожиданная ошибка
                 failed++;
@@ -109,7 +136,10 @@ public class StudentRepository {
     }
 
     // 3. Загрузка из файла
-    public void loadFromFile(String filePath) {
+    public void loadFromFile() {
+        System.out.println("Введите название файла");
+        String filePath = scanner.nextLine();
+
         String path = (filePath == null || filePath.isBlank()) ? DEFAULT_FILE_PATH : filePath;
         Path p = Paths.get(path);
 
@@ -126,16 +156,22 @@ public class StudentRepository {
                 if (line.isEmpty()) continue;
 
                 String[] parts = line.split(";");
-                if (parts.length != 3) continue;
+                if (parts.length != 3) {
+                    System.out.println("Студент пропущен - ошибка в данных файла: The number of parameters is not equal to 3");
+                    continue;
+                }
 
-                Student s = new Student.Builder()
-                        .groupNumber(parts[0].trim())
-                        .averageGrade(Double.parseDouble(parts[1].trim()))
-                        .recordBookNumber(parts[2].trim())
-                        .build();
-
-                students.add(s);
-                loaded++;
+                try {
+                    Student s = new Student.Builder()
+                            .groupNumber(parts[0].trim())
+                            .averageGrade(Double.parseDouble(parts[1].trim()))
+                            .recordBookNumber(parts[2].trim())
+                            .build();
+                    students.add(s);
+                    loaded++;
+                } catch (IllegalStateException | IllegalArgumentException e) {
+                    System.out.println("Студент пропущен - ошибка в данных файла: " + e.getMessage());
+                }
             }
         } catch (IOException e) {
             System.out.println("Ошибка чтения файла: " + e.getMessage());
@@ -148,7 +184,10 @@ public class StudentRepository {
 
     // 4. Сохранение в файл (режим append)
     // (доп. задание 2)
-    public void saveToFile(String filePath) {
+    public void saveToFile() {
+        System.out.println("Введите название файла");
+        String filePath = scanner.nextLine();
+
         if (students.isEmpty()) {
             System.out.println("Список пуст – сохранять нечего.");
             return;
@@ -161,15 +200,14 @@ public class StudentRepository {
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND)) {
 
+            bw.newLine();
             for (Student s : students) {
-                bw.write(String.format(Locale.US, "%s;%.2f;%s",
+                bw.write(String.format(Locale.US, "%s;%.2f;%s\n",
                         s.getGroupNumber(),
                         s.getAverageGrade(),
                         s.getRecordBookNumber()));
-                bw.newLine();
             }
             System.out.println("Успешно добавлено " + students.size() + " записей в файл: " + path);
-
         } catch (IOException e) {
             System.out.println("Ошибка записи в файл: " + e.getMessage());
         }
@@ -178,10 +216,10 @@ public class StudentRepository {
     // 5. Вывод списка
     public void printAllStudents() {
         if (students.isEmpty()) {
-            System.out.println("\nСписок студентов пуст.");
+            System.out.println("Список студентов пуст.");
             return;
         }
-        System.out.println("\n=== Список студентов (" + students.size() + ") ===");
+        System.out.println("=== Список студентов (" + students.size() + ") ===");
         for (int i = 0; i < students.size(); i++) {
             System.out.println((i + 1) + ". " + students.get(i));
         }
@@ -196,7 +234,7 @@ public class StudentRepository {
         students.clear();
     }
 
-    public void addStudents(Student[] students){
+    public void addStudents(Student[] students) {
         this.students.addAll(Arrays.asList(students));
     }
 }

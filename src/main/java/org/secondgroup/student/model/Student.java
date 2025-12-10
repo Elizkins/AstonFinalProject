@@ -28,7 +28,7 @@ public class Student implements Comparable<Student>{
             if (groupNumber == null || groupNumber.trim().isEmpty()) {
                 throw new IllegalArgumentException("Group number cannot be empty");
             }
-            if (!groupNumber.matches("[A-Za-z0-9-]+")) {
+            if (!groupNumber.matches("[A-Za-z0-9-]{1,6}")) {
                 throw new IllegalArgumentException("Invalid group number format");
             }
         }
@@ -78,11 +78,9 @@ public class Student implements Comparable<Student>{
             if (groupNumber.trim().isEmpty()) {
                 throw new IllegalStateException("Номер группы не может быть пустым");
             }
-
             if (recordBookNumber.trim().isEmpty()) {
                 throw new IllegalStateException("Номер зачетной книги не может быть пустым");
             }
-
             return new Student(this);
         }
     }
