@@ -2,9 +2,15 @@ package org.secondgroup.customcollection.processing;
 
 import org.secondgroup.customcollection.EnhancedModArray;
 import org.secondgroup.customcollection.FixedListOfElements;
+import org.secondgroup.sort.TestObjectForStrategiesUse;
 import org.secondgroup.sort.comparators.AvgGradeComparator;
 import org.secondgroup.sort.comparators.GroupNumberComparator;
 import org.secondgroup.sort.comparators.RegBookComparator;
+import org.secondgroup.sort.strategy.MergeSortStrategy;
+import org.secondgroup.sort.strategy.QuickSortStrategy;
+import org.secondgroup.sort.strategy.SelectionSortStrategy;
+import org.secondgroup.sort.strategy.SelectionSortStrategyEven;
+import org.secondgroup.sort.strategy.SortStrategy;
 import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;
@@ -40,13 +46,12 @@ public class TestStreamFileProcess {
 //        dest2.sort(regBookComp);
 
         // Or we can sort as in main app using strategies
-//        SortStrategy merge = new MergeSortStrategy();
-//        SortStrategy quick = new QuickSortStrategy();
-//        SortStrategy select = new SelectionSortStrategy();
-//        TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(quick);
-//        Student[] studs = dest.getStandardArray(Student.class);
-//        strategy.execSort(studs);
-//        TestObjectForStrategiesUse.printArray(studs);
+        SortStrategy merge = new MergeSortStrategy();
+        SortStrategy quick = new QuickSortStrategy();
+        SortStrategy select = new SelectionSortStrategy();
+        SortStrategy selectEven = new SelectionSortStrategyEven();
+        TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(selectEven);
+        Student[] studs = dest.getStandardArray(Student.class);
 
         //See what we got
         for (Student st : dest) {
@@ -57,13 +62,23 @@ public class TestStreamFileProcess {
 
         System.out.println();
 
-        for (Student st : dest2) {
+        /*for (Student st : dest2) {
             System.out.println(st);
         }
 
         System.out.println(dest2); // to see if there is free space in array
 
-        System.out.println(dest.showValuesCount());
+        System.out.println(dest.showValuesCount());*/
+
+        // Sort by even values
+        strategy.execSortOnEven(studs, Student.class, groupNumComp);
+        TestObjectForStrategiesUse.printArray(studs);
+        System.out.println();
+        strategy.execSortOnEven(studs, Student.class, avgComp);
+        TestObjectForStrategiesUse.printArray(studs);
+        System.out.println();
+        strategy.execSortOnEven(studs, Student.class, regBookComp);
+        TestObjectForStrategiesUse.printArray(studs);
 
 
     }

@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * elements (accumulator) and combining the results (combiner)). This allows a lazy creation of a custom collection that
  * will only be filled when it is actually needed.*/
 public class StudentsFileToCollection {
-    //FIXME: nee to set relative path in final app release
+    //FIXME: need to set relative path in final app release
     private static final String DEFAULT_FILE_PATH = "src/main/java/org/secondgroup/students.txt";
 
     public static EnhancedModArray<Student> processFile(String filePath) {
@@ -27,7 +27,7 @@ public class StudentsFileToCollection {
         Path p = Paths.get(path);
 
         if (!Files.exists(p)) {
-            System.out.println("Файл не найден: " + path);
+            System.out.println("File not found: " + path);
             return null;
         }
         return tryGetStudents(p.toString());
@@ -38,7 +38,7 @@ public class StudentsFileToCollection {
         Path p = Paths.get(path);
 
         if (!Files.exists(p)) {
-            System.out.println("Файл не найден: " + path);
+            System.out.println("File not found: " + path);
             return null;
         }
         return tryGetStudents(p.toString(), capacity);
