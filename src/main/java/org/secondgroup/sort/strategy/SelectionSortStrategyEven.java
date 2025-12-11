@@ -1,6 +1,6 @@
 package org.secondgroup.sort.strategy;
 
-import org.secondgroup.sort.algorithms.SelectionSortEven;
+import org.secondgroup.sort.algorithms.selectionsort.SelectionSortEven;
 import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;

@@ -1,12 +1,11 @@
-package org.secondgroup.sort.algorithms;
+package org.secondgroup.sort.algorithms.selectionsort;
 
+import org.secondgroup.sort.algorithms.sharedmethods.StudentFieldDefinition;
 import org.secondgroup.student.model.Student;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
-
-import static org.secondgroup.sort.algorithms.SelectionSortEven.defineField;
 
 /**
  * Variation of sort, using Selection sort as base, but also uses additional methods, needed to sort only even values
@@ -20,7 +19,7 @@ public class SelectionSortEvenAlt {
 
     public static <T extends Student> void sort(T[] arr, Class<T> classItself, Comparator<T> compar) {
 
-        int field = defineField(compar); // define on which field of Student it will treat
+        int field = StudentFieldDefinition.defineField(compar); // define on which field of Student it will treat
         T[] evenArr = extractEven(arr, classItself, field); // extract temporary array contains even elements
         T[] sortedEvenArr = sortEven(evenArr, compar); // Selection sort on temporary array
 
@@ -47,8 +46,8 @@ public class SelectionSortEvenAlt {
                 if (num % 2 == 0) {
                     arr[i] = sortedEvenArr[counterEven++];
                 }
-            } catch (ClassCastException e) {
-                throw new ClassCastException("Alarm! can not cast");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("can not parse value");
             }
         }
     }
@@ -77,8 +76,8 @@ public class SelectionSortEvenAlt {
                 if (num % 2 == 0) {
                     arrEven[counterEven++] = t;
                 }
-            } catch (ClassCastException e) {
-                throw new ClassCastException("Alarm! can not cast to int");
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("can not parse value");
             }
         }
         return Arrays.copyOf(arrEven, counterEven);
@@ -95,7 +94,7 @@ public class SelectionSortEvenAlt {
             int minIndex = i;
 
             for (int j = i + 1; j < n; j++) {
-                // Using compareTo() for ordering: negative means that arr[j] smaller
+                // Using comparator for ordering: negative means that arr[j] smaller
                 if (comparator.compare(arr[j], arr[minIndex]) < 0) {
                     minIndex = j;
                 }

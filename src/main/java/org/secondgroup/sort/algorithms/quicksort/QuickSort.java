@@ -1,4 +1,4 @@
-package org.secondgroup.sort.algorithms;
+package org.secondgroup.sort.algorithms.quicksort;
 
 /**
  * Quicksort is a popular, efficient, <b>not stable</b>, divide-and-conquer sorting algorithm that partitions an array around a chosen

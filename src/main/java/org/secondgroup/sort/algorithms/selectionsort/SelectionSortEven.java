@@ -1,8 +1,6 @@
-package org.secondgroup.sort.algorithms;
+package org.secondgroup.sort.algorithms.selectionsort;
 
-import org.secondgroup.sort.comparators.AvgGradeComparator;
-import org.secondgroup.sort.comparators.GroupNumberComparator;
-import org.secondgroup.sort.comparators.RegBookComparator;
+import org.secondgroup.sort.algorithms.sharedmethods.StudentFieldDefinition;
 import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;
@@ -17,7 +15,7 @@ public class SelectionSortEven {
 
     public static <T extends Student> void sort(T[] arr, Comparator<T> compar) {
 
-        int field = defineField(compar); // define on which field of Student it will treat
+        int field = StudentFieldDefinition.defineField(compar); // define on which field of Student it will treat
         int n = arr.length;
 
         // Moving the border of non-sorted part of array
@@ -31,7 +29,7 @@ public class SelectionSortEven {
 
             for (int j = i + 1; j < n; j++) {
                 int tmp = getElementValue(arr, j, field);
-                // Using compare for ordering: negative means that arr[j] smaller
+                // Using comparator for ordering: negative means that arr[j] smaller
                 if (tmp % 2 == 0 && compar.compare(arr[j], arr[minIndex]) < 0) {
                     minIndex = j;
                 }
@@ -65,18 +63,4 @@ public class SelectionSortEven {
         return num;
     }
 
-    static <T extends Student> int defineField(Comparator<T> compar) {
-        if (compar instanceof GroupNumberComparator) {
-            System.out.println("по полю \"Номер группы\"");
-            return 1;
-        } else if (compar instanceof AvgGradeComparator) {
-            System.out.println("по полю \"Средний балл\"");
-            return 2;
-        } else if (compar instanceof RegBookComparator) {
-            System.out.println("по полю \"Номер зачетной книжки\"");
-            return 3;
-        } else {
-            throw new IllegalArgumentException("wrong field name or such doesn't exist");
-        }
-    }
 }

@@ -1,6 +1,6 @@
 package org.secondgroup.sort.strategy;
 
-import org.secondgroup.sort.algorithms.SelectionSortEvenAlt;
+import org.secondgroup.sort.algorithms.selectionsort.SelectionSortEvenAlt;
 import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;

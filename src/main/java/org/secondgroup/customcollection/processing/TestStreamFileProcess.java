@@ -7,7 +7,9 @@ import org.secondgroup.sort.comparators.AvgGradeComparator;
 import org.secondgroup.sort.comparators.GroupNumberComparator;
 import org.secondgroup.sort.comparators.RegBookComparator;
 import org.secondgroup.sort.strategy.MergeSortStrategy;
+import org.secondgroup.sort.strategy.MergeSortStrategyEven;
 import org.secondgroup.sort.strategy.QuickSortStrategy;
+import org.secondgroup.sort.strategy.QuickSortStrategyEven;
 import org.secondgroup.sort.strategy.SelectionSortStrategy;
 import org.secondgroup.sort.strategy.SelectionSortStrategyEvenAlt;
 import org.secondgroup.sort.strategy.SelectionSortStrategyEven;
@@ -48,10 +50,13 @@ public class TestStreamFileProcess {
 
         // Or we can sort as in main app using strategies
         SortStrategy merge = new MergeSortStrategy();
+        SortStrategy mergeEven = new MergeSortStrategyEven();
         SortStrategy quick = new QuickSortStrategy();
+        SortStrategy quickEven = new QuickSortStrategyEven();
         SortStrategy select = new SelectionSortStrategy();
         SortStrategy selectEven = new SelectionSortStrategyEven();
         SortStrategy selectEvenAlt = new SelectionSortStrategyEvenAlt();
+
         TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(selectEvenAlt);
         Student[] studs = dest.getStandardArray(Student.class);
 
@@ -72,17 +77,33 @@ public class TestStreamFileProcess {
 
         System.out.println(dest.showValuesCount());*/
 
+        System.out.println();
+
         // Sort by even values
+        // Selection sort
 //        strategy.execSortOnEven(studs, Student.class, groupNumComp);
 //        TestObjectForStrategiesUse.printArray(studs);
 //        System.out.println();
 //        strategy.execSortOnEven(studs, Student.class, avgComp);
 //        TestObjectForStrategiesUse.printArray(studs);
-        System.out.println();
-        strategy.changeStrategy(selectEven);
+
+        // Quick sort
+//        strategy.changeStrategy(quickEven);
+//        strategy.execSortOnEven(studs, Student.class, groupNumComp);
+//        TestObjectForStrategiesUse.printArray(studs);
+//        strategy.execSortOnEven(studs, Student.class, avgComp);
+//        TestObjectForStrategiesUse.printArray(studs);
+//        strategy.execSortOnEven(studs, Student.class, regBookComp);
+//        TestObjectForStrategiesUse.printArray(studs);
+
+        // Merge sort
+        strategy.changeStrategy(mergeEven);
+//        strategy.execSortOnEven(studs, Student.class, groupNumComp);
+//        TestObjectForStrategiesUse.printArray(studs);
+//        strategy.execSortOnEven(studs, Student.class, avgComp);
+//        TestObjectForStrategiesUse.printArray(studs);
         strategy.execSortOnEven(studs, Student.class, regBookComp);
         TestObjectForStrategiesUse.printArray(studs);
-
 
     }
 

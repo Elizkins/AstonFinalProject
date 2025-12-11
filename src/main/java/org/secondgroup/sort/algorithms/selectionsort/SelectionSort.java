@@ -1,4 +1,4 @@
-package org.secondgroup.sort.algorithms;
+package org.secondgroup.sort.algorithms.selectionsort;
 
 /**
  * Selection sort is an in-place, comparison-based sorting algorithm that repeatedly finds the minimum element from

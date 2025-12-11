@@ -1,6 +1,6 @@
 package org.secondgroup.sort.strategy;
 
-import org.secondgroup.sort.algorithms.SelectionSort;
+import org.secondgroup.sort.algorithms.selectionsort.SelectionSort;
 
 
 public class SelectionSortStrategy implements SortStrategy {

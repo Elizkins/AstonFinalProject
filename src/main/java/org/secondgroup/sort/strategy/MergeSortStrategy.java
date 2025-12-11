@@ -1,6 +1,6 @@
 package org.secondgroup.sort.strategy;
 
-import org.secondgroup.sort.algorithms.MergeSort;
+import org.secondgroup.sort.algorithms.mergesort.MergeSort;
 
 
 public class MergeSortStrategy implements SortStrategy {

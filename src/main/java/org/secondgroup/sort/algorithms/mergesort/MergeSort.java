@@ -1,9 +1,9 @@
-package org.secondgroup.sort.algorithms;
+package org.secondgroup.sort.algorithms.mergesort;
 
 /**
- * Merge Sort is an efficient, <b>stable</b>, divide-and-conquer sorting algorithm that works by recursively breaking down an
- * array into single-element sub-arrays and then merging those sub-arrays back together in sorted order. It has a time
- * complexity of O(n log n) in all cases (best, average, and worst). Here it uses Generics, so classes meant
+ * Merge Sort is an efficient, <b>stable</b>, divide-and-conquer sorting algorithm that works by recursively breaking
+ * down an array into single-element sub-arrays and then merging those sub-arrays back together in sorted order. It has
+ * a time complexity of O(n log n) in all cases (best, average, and worst). Here it uses Generics, so classes meant
  * to be sorted should implement {@link Comparable} interface because of use {@link Comparable#compareTo(Object)} in
  * {@link MergeSort#merge(Comparable[], int, int, int)} method.
  */
