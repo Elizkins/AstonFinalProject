@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Scanner;
 
 public class StudentRepository {
     private static final Scanner scanner = new Scanner(System.in);
@@ -209,7 +211,7 @@ public class StudentRepository {
         return students.getStandardArray(Student.class);
     }
 
-    public void sortStudents(TestObjectForStrategiesUse strategy){
+    public void sortStudents(TestObjectForStrategiesUse strategy) {
         Student[] students = getStudents();
         strategy.execSort(students);
         clear();
@@ -218,5 +220,37 @@ public class StudentRepository {
 
     public void clear() {
         students.clear();
+    }
+
+    public void countOcurrency() {
+        int count = readInt(0, Runtime.getRuntime().availableProcessors(),
+                "Введите число потоков: ",
+                "Ошибка: введите целое число (0 - " + Runtime.getRuntime().availableProcessors() + ")");
+
+        try {
+            System.out.print("Ввод студента\nНомер группы (1-6 символов): ");
+            String group = scanner.nextLine().trim();
+
+            System.out.print("Средний балл (0.0 – 5.0): ");
+            double grade = Double.parseDouble(scanner.nextLine().trim());
+
+            System.out.print("Номер зачётной книжки (6-10 цифр): ");
+            String recordBook = scanner.nextLine().trim();
+
+            Student student = new Student.Builder()
+                    .groupNumber(group)
+                    .averageGrade(grade)
+                    .recordBookNumber(recordBook)
+                    .build();
+
+            int occurrencesParallelCount = students.countOccurrencesParallel(student, count);
+            System.out.println("Количество вхождений " + student + " равно: " + occurrencesParallelCount);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка: средний балл должен быть числом.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("Ошибка валидации: " + e.getMessage());
+        }
+
     }
 }

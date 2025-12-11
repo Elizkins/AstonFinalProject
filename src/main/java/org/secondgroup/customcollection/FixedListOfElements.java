@@ -1,10 +1,9 @@
 package org.secondgroup.customcollection;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.concurrent.*;
+
 /**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
  * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, replaced, but
  * the maximum possible number of elements is known in advance. Our list based on array of elements with fixed length.
@@ -292,5 +291,65 @@ public class FixedListOfElements<T> implements Iterable<T> {
 
     public static <T> FixedListOfElements<T> createMyCustomCol(T[] elements) {
         return new FixedListOfElements<>(elements);
+    }
+
+    public int countOccurrencesParallel(T element, int threadCount) {
+        int elementCount = 0;
+
+        if (threadCount <= 1) {
+            elementCount = countOccurrencesSequential(element);
+            throw new IllegalArgumentException("Количество вхождений " + element + " равно: " + elementCount);
+        }
+
+        if(threadCount >= Runtime.getRuntime().availableProcessors() - 1)
+            threadCount = Runtime.getRuntime().availableProcessors() - 1;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        int chunkSize = Math.max(1, entriesCount / threadCount);
+
+        List<Future<Integer>> futures = new ArrayList<>();
+        for (int thread = 0; thread < threadCount; thread++) {
+            int startIndex = thread * chunkSize;
+            if (startIndex >= entriesCount) {
+                break;
+            }
+            int endIndex = (thread == threadCount - 1) ? entriesCount : Math.min((thread + 1) * chunkSize, entriesCount);
+            Callable<Integer> task = getTask(element, startIndex, endIndex);
+            futures.add(executorService.submit(task));
+        }
+
+        for (Future<Integer> future : futures) {
+            try {
+                elementCount += future.get();
+            } catch (ExecutionException | InterruptedException e) {
+                throw new IllegalStateException("Ошибка потока: " + e.getMessage());
+            }
+        }
+
+        executorService.shutdown();
+
+        return elementCount;
+    }
+
+    public int countOccurrencesSequential(T element) {
+        int n = 0;
+        for (int i = 0; i < entriesCount; i++) {
+            if (Objects.equals(elements[i], element)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    private Callable<Integer> getTask(T element, int startIndex, int endIndex) {
+        return () -> {
+            int n = 0;
+            for (int j = startIndex; j < endIndex; j++) {
+                if (Objects.equals(elements[j], element)) {
+                    n++;
+                }
+            }
+            return n;
+        };
     }
 }
