@@ -22,7 +22,7 @@ public class TestObjectForStrategiesUse {
         this.sortStrategy.sort(array);
     }
 
-    public <T extends Student> void execSortOnEven(T[] array,Class<T> classItself, Comparator<T> comparator) {
+    public <T extends Student> void execSortOnEven(T[] array, Class<T> classItself, Comparator<T> comparator) {
         this.sortStrategy.sort(array, classItself, comparator);
     }
 

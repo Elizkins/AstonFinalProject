@@ -11,6 +11,6 @@ public class SelectionSortStrategyEven implements SortStrategy {
     @Override
     public <T extends Student> void sort(T[] array, Class<T> classItself, Comparator<T> comparator) {
         System.out.print("Cортировка выбором только четных значений ");
-        SelectionSortEven.sort(array, classItself, comparator);
+        SelectionSortEven.sort(array, comparator);
     }
 }

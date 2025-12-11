@@ -9,6 +9,7 @@ import org.secondgroup.sort.comparators.RegBookComparator;
 import org.secondgroup.sort.strategy.MergeSortStrategy;
 import org.secondgroup.sort.strategy.QuickSortStrategy;
 import org.secondgroup.sort.strategy.SelectionSortStrategy;
+import org.secondgroup.sort.strategy.SelectionSortStrategyEvenAlt;
 import org.secondgroup.sort.strategy.SelectionSortStrategyEven;
 import org.secondgroup.sort.strategy.SortStrategy;
 import org.secondgroup.student.model.Student;
@@ -50,7 +51,8 @@ public class TestStreamFileProcess {
         SortStrategy quick = new QuickSortStrategy();
         SortStrategy select = new SelectionSortStrategy();
         SortStrategy selectEven = new SelectionSortStrategyEven();
-        TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(selectEven);
+        SortStrategy selectEvenAlt = new SelectionSortStrategyEvenAlt();
+        TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(selectEvenAlt);
         Student[] studs = dest.getStandardArray(Student.class);
 
         //See what we got
@@ -71,12 +73,13 @@ public class TestStreamFileProcess {
         System.out.println(dest.showValuesCount());*/
 
         // Sort by even values
-        strategy.execSortOnEven(studs, Student.class, groupNumComp);
-        TestObjectForStrategiesUse.printArray(studs);
+//        strategy.execSortOnEven(studs, Student.class, groupNumComp);
+//        TestObjectForStrategiesUse.printArray(studs);
+//        System.out.println();
+//        strategy.execSortOnEven(studs, Student.class, avgComp);
+//        TestObjectForStrategiesUse.printArray(studs);
         System.out.println();
-        strategy.execSortOnEven(studs, Student.class, avgComp);
-        TestObjectForStrategiesUse.printArray(studs);
-        System.out.println();
+        strategy.changeStrategy(selectEven);
         strategy.execSortOnEven(studs, Student.class, regBookComp);
         TestObjectForStrategiesUse.printArray(studs);
 
