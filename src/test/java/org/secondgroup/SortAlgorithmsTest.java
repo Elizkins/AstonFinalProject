@@ -11,7 +11,7 @@ import org.secondgroup.student.model.Student;
 import java.util.ArrayList;
 import java.util.List;
 
-@DisplayName("Sort algorithms test")
+@DisplayName("Sort algorithms tests")
 public class SortAlgorithmsTest {
 
     private String[] strings = {"rachel", "ross", "monica", "chandler", "joey", "phoebe"};

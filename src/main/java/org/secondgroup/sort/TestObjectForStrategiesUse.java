@@ -18,12 +18,4 @@ public class TestObjectForStrategiesUse {
     public <T extends Comparable<? super T>> void execSort(T[] array) {
         this.sortStrategy.sort(array);
     }
-
-    public static <T> void printArray(T[] arr) {
-        for (T element : arr) {
-            System.out.println(element);
-        }
-        System.out.println();
-    }
-
 }

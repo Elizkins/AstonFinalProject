@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.secondgroup.student.model.Student;
 
-@DisplayName("Student validation test")
+@DisplayName("Student validation tests")
 public class StudentTest {
 
     @Test
@@ -41,7 +41,7 @@ public class StudentTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1234", "ASDF", "asdf", "123-123"})
+    @ValueSource(strings = {"1234", "ASDF", "asdf", "12-23"})
     @DisplayName("GroupNumber validation test")
     public void validateGroupNumberForSuccess(String groupNumber) {
         Student.Builder builder = new Student.Builder();
@@ -106,7 +106,7 @@ public class StudentTest {
     public void validateRecordBookNumberForSuccess(String recordNumber) {
         Student.Builder builder = new Student.Builder();
 
-        Assertions.assertDoesNotThrow(() -> builder.groupNumber(recordNumber));
+        Assertions.assertDoesNotThrow(() -> builder.recordBookNumber(recordNumber));
     }
 
     @Test
