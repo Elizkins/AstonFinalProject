@@ -71,7 +71,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
 
     @SuppressWarnings("unchecked")
     public T getByPosition(int position) {
-        if (position >= 0 && position < this.elements.length) {
+        if (position >= 0 && position < entriesCount) {
             return (T) this.elements[position];
         } else {
             throw new IllegalArgumentException("wrong index value");
@@ -137,8 +137,8 @@ public class FixedListOfElements<T> implements Iterable<T> {
 
     public void addInTail(T[] values) {
         if (entriesCount != elements.length && values.length <= (elements.length - entriesCount)) {
-            for (int i = 0; i < values.length; i++) {
-                elements[entriesCount] = values[i];
+            for (T value : values) {
+                elements[entriesCount] = value;
                 entriesCount++;
             }
         }
@@ -218,7 +218,6 @@ public class FixedListOfElements<T> implements Iterable<T> {
             System.arraycopy(elements, index + 1, newarr, index, elements.length - index - 1);
             this.elements = newarr;
             entriesCount--;
-
         } else {
             throw new IllegalArgumentException("wrong index value");
         }
@@ -297,8 +296,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
         int elementCount = 0;
 
         if (threadCount <= 1) {
-            elementCount = countOccurrencesSequential(element);
-            throw new IllegalArgumentException("Количество вхождений " + element + " равно: " + elementCount);
+            return countOccurrencesSequential(element);
         }
 
         if(threadCount >= Runtime.getRuntime().availableProcessors() - 1)
