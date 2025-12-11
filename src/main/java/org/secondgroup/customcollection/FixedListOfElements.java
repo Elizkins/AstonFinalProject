@@ -4,11 +4,10 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.*;
 
-/**
- * Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
- * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, but the
- * maximum possible number of elements is known in advance. Our list based on array of elements with fixed length. It
- * provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
+/**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
+ * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, replaced, but
+ * the maximum possible number of elements is known in advance. Our list based on array of elements with fixed length.
+ * It provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
  * operations have O(n) time complexity. For our study project we realized here some base operations which should be
  * sufficient for the educational purposes:<br>
  * - adding a new element to the end of an array;<br>
