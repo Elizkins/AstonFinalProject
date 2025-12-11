@@ -2,11 +2,6 @@ package org.secondgroup.customcollection;
 
 import java.lang.reflect.Array;
 import java.util.*;
-/**Our custom collection is a kind of wrap around an array of elements that will retain the functionality of arrays and
- * add some features. Fixed list of elements is a set of non-unique elements, which can be added, removed, replaced, but
- * the maximum possible number of elements is known in advance. Our list based on array of elements with fixed length.
- * It provides time complexity O(1) in {@link #getByPosition(int)} and {@link #addInTail(Object)} operations. Other
-import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -299,13 +294,12 @@ public class FixedListOfElements<T> implements Iterable<T> {
         return new FixedListOfElements<>(elements);
     }
 
-    public void countOccurrencesParallel(T element, int threadCount) {
+    public int countOccurrencesParallel(T element, int threadCount) {
         int elementCount = 0;
 
         if (threadCount <= 1) {
             elementCount = countOccurrencesSequential(element);
-            System.out.println("Количество вхождений " + element + " равно: " + elementCount);
-            return;
+            throw new IllegalArgumentException("Количество вхождений " + element + " равно: " + elementCount);
         }
 
         if(threadCount >= Runtime.getRuntime().availableProcessors() - 1)
@@ -329,13 +323,13 @@ public class FixedListOfElements<T> implements Iterable<T> {
             try {
                 elementCount += future.get();
             } catch (ExecutionException | InterruptedException e) {
-                System.out.println("Ошибка потока: " + e.getMessage());
+                throw new IllegalStateException("Ошибка потока: " + e.getMessage());
             }
         }
 
         executorService.shutdown();
 
-        System.out.println("Количество вхождений " + element + " равно: " + elementCount);
+        return elementCount;
     }
 
     public int countOccurrencesSequential(T element) {

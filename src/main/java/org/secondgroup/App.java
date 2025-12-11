@@ -23,10 +23,12 @@ public class App {
                 "3. Сортировка коллекции\n" +
                 "4. Очистка коллекции\n" +
                 "5. Задать размер массива\n" +
-                "6. Выход", "Некорректный ввод. Введите число от 1 до 6");
+                "6. Узнать количество вхождений элемента в коллекцию\n" +
+                "7. Выход", "Некорректный ввод. Введите число от 1 до 6");
         mainMenu.addHandler(new Handler("4", studentRepository::clear));
         mainMenu.addHandler(new Handler("5", studentRepository::changeCapacity));
-        mainMenu.addHandler(new Handler("6", () -> isRunning[0] = false));
+        mainMenu.addHandler(new Handler("6", studentRepository::countOcurrency));
+        mainMenu.addHandler(new Handler("7", () -> isRunning[0] = false));
 
         //выбор способа ввода
         Menu inputMenu = new Menu("Выберите способ ввода\n" +
