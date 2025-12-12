@@ -7,7 +7,7 @@ import org.secondgroup.student.model.Student;
 
 import java.util.Comparator;
 
-public class StudentFieldDefinition {
+public abstract class StudentFieldDefinition {
     public static <T extends Student> int defineField(Comparator<T> compar) {
         if (compar instanceof GroupNumberComparator) {
             System.out.println("по полю \"Номер группы\"");
