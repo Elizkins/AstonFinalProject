@@ -26,11 +26,4 @@ public class TestObjectForStrategiesUse {
         this.sortStrategy.sort(array, classItself, comparator);
     }
 
-    public static <T> void printArray(T[] arr) {
-        for (T element : arr) {
-            System.out.println(element);
-        }
-        System.out.println();
-    }
-
 }
