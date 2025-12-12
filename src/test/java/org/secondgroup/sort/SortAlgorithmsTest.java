@@ -1,15 +1,11 @@
-package org.secondgroup;
+package org.secondgroup.sort;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.secondgroup.sort.algorithms.MergeSort;
-import org.secondgroup.sort.algorithms.QuickSort;
-import org.secondgroup.sort.algorithms.SelectionSort;
-import org.secondgroup.student.model.Student;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.secondgroup.sort.algorithms.mergesort.MergeSort;
+import org.secondgroup.sort.algorithms.quicksort.QuickSort;
+import org.secondgroup.sort.algorithms.selectionsort.SelectionSort;
 
 @DisplayName("Sort algorithms tests")
 public class SortAlgorithmsTest {

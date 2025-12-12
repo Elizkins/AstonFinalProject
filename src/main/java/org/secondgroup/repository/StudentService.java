@@ -14,12 +14,11 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class StudentService {
-    private static final StudentRepository studentRepository = new StudentRepository();
-    private static final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
+    private final StudentRepository studentRepository = new StudentRepository();
+    private final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
+    private final Scanner scanner = new Scanner(System.in);
 
     private Comparator<Student> comparator = new AvgGradeComparator();
-
-    private static final Scanner scanner = new Scanner(System.in);
 
     private int readInt(int minValue, int maxValue, String innerMessage) {
         while (true) {
