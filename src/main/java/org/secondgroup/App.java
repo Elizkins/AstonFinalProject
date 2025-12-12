@@ -2,15 +2,14 @@ package org.secondgroup;
 
 import org.secondgroup.menu.Handler;
 import org.secondgroup.menu.Menu;
-import org.secondgroup.repository.StudentRepository;
+import org.secondgroup.repository.StudentService;
 import org.secondgroup.sort.TestObjectForStrategiesUse;
 import org.secondgroup.sort.strategy.MergeSortStrategy;
 import org.secondgroup.sort.strategy.QuickSortStrategy;
 import org.secondgroup.sort.strategy.SelectionSortStrategy;
-import org.secondgroup.student.model.Student;
 
 public class App {
-    static StudentRepository studentRepository = new StudentRepository();
+    static StudentService studentService = new StudentService();
     static TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
 
     public static void main(String[] args) {
@@ -25,9 +24,9 @@ public class App {
                 "5. Задать размер массива\n" +
                 "6. Узнать количество вхождений элемента в коллекцию\n" +
                 "7. Выход", "Некорректный ввод. Введите число от 1 до 6");
-        mainMenu.addHandler(new Handler("4", studentRepository::clear));
-        mainMenu.addHandler(new Handler("5", studentRepository::changeCapacity));
-        mainMenu.addHandler(new Handler("6", studentRepository::countOcurrency));
+        mainMenu.addHandler(new Handler("4", studentService::clearCommand));
+        mainMenu.addHandler(new Handler("5", studentService::changeCapacityCommand));
+        mainMenu.addHandler(new Handler("6", studentService::countOcurrencyCommand));
         mainMenu.addHandler(new Handler("7", () -> isRunning[0] = false));
 
         //выбор способа ввода
@@ -36,9 +35,9 @@ public class App {
                 "2. Ввод из файла\n" +
                 "3. Случайная генерация\n" +
                 "4. Вернуться назад", "Некорректный ввод. Введите число от 1 до 4");
-        inputMenu.addHandler(new Handler("1", studentRepository::addStudentManually));
-        inputMenu.addHandler(new Handler("2", studentRepository::loadFromFile));
-        inputMenu.addHandler(new Handler("3", studentRepository::addRandomStudents));
+        inputMenu.addHandler(new Handler("1", studentService::addStudentManuallyCommand));
+        inputMenu.addHandler(new Handler("2", studentService::loadFromFileCommand));
+        inputMenu.addHandler(new Handler("3", studentService::addRandomStudentsCommand));
         inputMenu.addHandler(new Handler("4", () -> {
             return;
         }));
@@ -48,8 +47,8 @@ public class App {
                 "1. Вывод в консоль\n" +
                 "2. Вывод в файл\n" +
                 "3. Вернуться назад", "Некорректный ввод. Введите число от 1 до 3");
-        outputMenu.addHandler(new Handler("1", studentRepository::printAllStudents));
-        outputMenu.addHandler(new Handler("2", studentRepository::saveToFile));
+        outputMenu.addHandler(new Handler("1", studentService::printToConsoleCommand));
+        outputMenu.addHandler(new Handler("2", studentService::saveToFileCommand));
         outputMenu.addHandler(new Handler("3", () -> {
             return;
         }));
@@ -64,15 +63,15 @@ public class App {
         );
         sortMenu.addHandler(new Handler("1", () -> {
             strategy.changeStrategy(new MergeSortStrategy());
-            studentRepository.sortStudents(strategy);
+            studentService.sortStudentsCommand(strategy);
         }));
         sortMenu.addHandler(new Handler("2", () -> {
             strategy.changeStrategy(new QuickSortStrategy());
-            studentRepository.sortStudents(strategy);
+            studentService.sortStudentsCommand(strategy);
         }));
         sortMenu.addHandler(new Handler("3", () -> {
             strategy.changeStrategy(new SelectionSortStrategy());
-            studentRepository.sortStudents(strategy);
+            studentService.sortStudentsCommand(strategy);
         }));
         sortMenu.addHandler(new Handler("4", () -> {
             return;
