@@ -21,53 +21,50 @@ import java.util.stream.Stream;
  * elements (accumulator) and combining the results (combiner)). This allows a lazy creation of a custom collection that
  * will only be filled when it is actually needed.
  */
-public class StudentsFileToCollection {
+public abstract  class StudentsFileToCollection {
+
     private static final String DEFAULT_FILE_PATH = "students.txt";
 
-    public static EnhancedModArray<Student> processFile(String filePath) {
+    public static EnhancedModArray<Student> processFile(String filePath) throws IOException {
         String path = (filePath == null || filePath.isBlank()) ? DEFAULT_FILE_PATH : filePath;
         Path p = Paths.get(path);
 
         if (!Files.exists(p)) {
-            System.out.println("Файл не найден: " + path);
-            return null;
+            throw new IOException("Файл не найден: " + path);
         }
         return tryGetStudents(p.toString());
     }
 
-    public static FixedListOfElements<Student> processFile(String filePath, int capacity) {
+    public static FixedListOfElements<Student> processFile(String filePath, int capacity) throws IOException {
         String path = (filePath == null || filePath.isBlank()) ? DEFAULT_FILE_PATH : filePath;
         Path p = Paths.get(path);
 
         if (!Files.exists(p)) {
-            System.out.println("Файл не найден: " + path);
-            return null;
+            throw new IOException("Файл не найден: " + path);
         }
         return tryGetStudents(p.toString(), capacity);
     }
 
-    public static EnhancedModArray<Student> tryGetStudents(String filePath) {
+    public static EnhancedModArray<Student> tryGetStudents(String filePath) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             return lines
                     .map(StudentsFileToCollection::fromString)
                     .filter(Objects::nonNull)
                     .collect(StudentCollector.getStudentEnhancedModArrayCollector());
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+        } catch (IOException e) {
+            throw new IOException("Прерванное чтение файла: " + e.getMessage());
         }
-        return null;
     }
 
-    public static FixedListOfElements<Student> tryGetStudents(String filePath, int capacity) {
+    public static FixedListOfElements<Student> tryGetStudents(String filePath, int capacity) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             return lines
                     .map(StudentsFileToCollection::fromString)
                     .filter(Objects::nonNull)
                     .collect(StudentCollector.getStudentFixedListOfElementsCollector(capacity));
         } catch (IOException e) {
-            System.out.println("Ошибка чтения файла: " + e.getMessage());
+            throw new IOException("Прерванное чтение файла: " + e.getMessage());
         }
-        return null;
     }
 
     private static Student fromString(String line) {
@@ -89,5 +86,4 @@ public class StudentsFileToCollection {
             return null;
         }
     }
-
 }
