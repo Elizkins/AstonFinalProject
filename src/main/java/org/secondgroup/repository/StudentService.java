@@ -4,13 +4,21 @@ import org.secondgroup.customcollection.FixedListOfElements;
 import org.secondgroup.customcollection.processing.StudentsCollectionToFile;
 import org.secondgroup.customcollection.processing.StudentsFileToCollection;
 import org.secondgroup.sort.TestObjectForStrategiesUse;
+import org.secondgroup.sort.comparators.AvgGradeComparator;
+import org.secondgroup.sort.strategy.SelectionSortStrategy;
+import org.secondgroup.sort.strategy.SortStrategy;
 import org.secondgroup.student.model.Student;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class StudentService {
     private static final StudentRepository studentRepository = new StudentRepository();
+    private static final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
+
+    private Comparator<Student> comparator = new AvgGradeComparator();
+
     private static final Scanner scanner = new Scanner(System.in);
 
     private int readInt(int minValue, int maxValue, String innerMessage) {
@@ -50,20 +58,24 @@ public class StudentService {
         int count = readInt(0, studentRepository.getAvailableCount(),
                 "Введите число студентов: ");
 
-        try {
-            for (int i = 1; i <= count; i++) {
-                System.out.print("Добавление студента " + i + " вручную\n");
+        int failCount = 0;
 
+        for (int i = 1; i <= count; i++) {
+            System.out.print("Добавление студента " + i + " вручную\n");
+
+            try {
                 Student student = StudentInputService.getStudentWithConsole(scanner);
-
                 studentRepository.add(student);
+            } catch (NumberFormatException e) {
+                failCount++;
+                System.out.println("Ошибка: средний балл должен быть числом.");
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                failCount++;
+                System.out.println("Ошибка валидации: " + e.getMessage());
             }
-            System.out.println("Успешно добавлено студентов: " + count);
-        } catch (NumberFormatException e) {
-            System.out.println("Ошибка: средний балл должен быть числом.");
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            System.out.println("Ошибка валидации: " + e.getMessage());
         }
+        System.out.println("Успешно добавлено студентов: " + (count - failCount));
+
     }
 
     public void addRandomStudentsCommand() {
@@ -157,12 +169,33 @@ public class StudentService {
         }
     }
 
-    public void sortStudentsCommand(TestObjectForStrategiesUse strategy) {
+    public void sortStudentsCommand(SortStrategy newStrategy) {
+        strategy.changeStrategy(newStrategy);
+
         Student[] students = studentRepository.getAll();
         strategy.execSort(students);
+
         studentRepository.deleteAll();
         studentRepository.add(students);
+
         System.out.println("Сортировка выполнена.");
+    }
+
+    public void additionalSortStudentsCommand(SortStrategy newStrategy) {
+        strategy.changeStrategy(newStrategy);
+
+        Student[] students = studentRepository.getAll();
+        strategy.execSortOnEven(students, Student.class, comparator);
+
+        studentRepository.deleteAll();
+        studentRepository.add(students);
+
+        System.out.println("Сортировка выполнена.");
+    }
+
+    public void changeComparatorCommand(Comparator<Student> comparator){
+        this.comparator = comparator;
+        System.out.println("Поле для сортировки было изменено.");
     }
 
     public void clearCommand() {
@@ -187,4 +220,6 @@ public class StudentService {
         }
 
     }
+
+
 }

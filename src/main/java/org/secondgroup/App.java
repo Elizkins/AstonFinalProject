@@ -4,13 +4,16 @@ import org.secondgroup.menu.Handler;
 import org.secondgroup.menu.Menu;
 import org.secondgroup.repository.StudentService;
 import org.secondgroup.sort.TestObjectForStrategiesUse;
-import org.secondgroup.sort.strategy.MergeSortStrategy;
-import org.secondgroup.sort.strategy.QuickSortStrategy;
-import org.secondgroup.sort.strategy.SelectionSortStrategy;
+import org.secondgroup.sort.comparators.AvgGradeComparator;
+import org.secondgroup.sort.comparators.GroupNumberComparator;
+import org.secondgroup.sort.comparators.RegBookComparator;
+import org.secondgroup.sort.strategy.*;
+import org.secondgroup.student.model.Student;
+
+import java.util.Comparator;
 
 public class App {
     static StudentService studentService = new StudentService();
-    static TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
 
     public static void main(String[] args) {
         boolean[] isRunning = {true}; // создаем массив из одного элемента чтобы можно было менять значение в лямбде
@@ -58,24 +61,56 @@ public class App {
                 "1. Сортировка слиянием\n" +
                 "2. Быстрая сортировка\n" +
                 "3. Сортировка выбором\n" +
+                "4. Сортировка слиянием (усложненная)\n" +
+                "5. Быстрая сортировка (усложненная)\n" +
+                "6. Сортировка выбором (усложненная)\n" +
+                "7. Изменить поле для сортировки\n" +
+                "8. Вернуться назад",
+                "Некорректный ввод. Введите число от 1 до 8"
+        );
+        sortMenu.addHandler(new Handler("1", () -> {
+            studentService.sortStudentsCommand(new MergeSortStrategy());
+        }));
+        sortMenu.addHandler(new Handler("2", () -> {
+            studentService.sortStudentsCommand(new QuickSortStrategy());
+        }));
+        sortMenu.addHandler(new Handler("3", () -> {
+            studentService.sortStudentsCommand(new SelectionSortStrategy());
+        }));
+        sortMenu.addHandler(new Handler("4", () -> {
+            studentService.additionalSortStudentsCommand(new MergeSortStrategyEven());
+        }));
+        sortMenu.addHandler(new Handler("5", () -> {
+            studentService.additionalSortStudentsCommand(new QuickSortStrategyEven());
+        }));
+        sortMenu.addHandler(new Handler("6", () -> {
+            studentService.additionalSortStudentsCommand(new SelectionSortStrategyEven());
+        }));
+        sortMenu.addHandler(new Handler("8", () -> {
+            return;
+        }));
+
+        Menu comparatorMenu = new Menu("Выберите поле для сортировки\n" +
+                "1. По группе\n" +
+                "2. По оценке\n" +
+                "3. По номеру зачетной книжки\n" +
                 "4. Вернуться назад",
                 "Некорректный ввод. Введите число от 1 до 4"
         );
-        sortMenu.addHandler(new Handler("1", () -> {
-            strategy.changeStrategy(new MergeSortStrategy());
-            studentService.sortStudentsCommand(strategy);
+        comparatorMenu.addHandler(new Handler("1", () -> {
+            studentService.changeComparatorCommand(new GroupNumberComparator());
         }));
-        sortMenu.addHandler(new Handler("2", () -> {
-            strategy.changeStrategy(new QuickSortStrategy());
-            studentService.sortStudentsCommand(strategy);
+        comparatorMenu.addHandler(new Handler("2", () -> {
+            studentService.changeComparatorCommand(new AvgGradeComparator());
         }));
-        sortMenu.addHandler(new Handler("3", () -> {
-            strategy.changeStrategy(new SelectionSortStrategy());
-            studentService.sortStudentsCommand(strategy);
+        comparatorMenu.addHandler(new Handler("3", () -> {
+            studentService.changeComparatorCommand(new RegBookComparator());
         }));
-        sortMenu.addHandler(new Handler("4", () -> {
+        comparatorMenu.addHandler(new Handler("4", () -> {
             return;
         }));
+
+        sortMenu.addHandler(new Handler("7", comparatorMenu::run));
 
         mainMenu.addHandler(new Handler("1", inputMenu::run));
         mainMenu.addHandler(new Handler("2", outputMenu::run));
