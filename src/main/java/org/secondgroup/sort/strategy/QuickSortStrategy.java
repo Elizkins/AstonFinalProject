@@ -1,6 +1,6 @@
 package org.secondgroup.sort.strategy;
 
-import org.secondgroup.sort.algorithms.QuickSort;
+import org.secondgroup.sort.algorithms.quicksort.QuickSort;
 
 
 public class QuickSortStrategy implements SortStrategy {

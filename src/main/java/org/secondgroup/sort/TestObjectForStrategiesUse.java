@@ -1,6 +1,9 @@
 package org.secondgroup.sort;
 
 import org.secondgroup.sort.strategy.SortStrategy;
+import org.secondgroup.student.model.Student;
+
+import java.util.Comparator;
 
 // Some object that uses strategies, which meant to be interchangeable independently of this object
 public class TestObjectForStrategiesUse {
@@ -18,4 +21,9 @@ public class TestObjectForStrategiesUse {
     public <T extends Comparable<? super T>> void execSort(T[] array) {
         this.sortStrategy.sort(array);
     }
+
+    public <T extends Student> void execSortOnEven(T[] array, Class<T> classItself, Comparator<T> comparator) {
+        this.sortStrategy.sort(array, classItself, comparator);
+    }
+
 }
