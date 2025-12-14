@@ -84,7 +84,7 @@ public class App {
             studentService.additionalSortStudentsCommand(new QuickSortStrategyEven());
         }));
         sortMenu.addHandler(new Handler("6", () -> {
-            studentService.additionalSortStudentsCommand(new SelectionSortStrategyEven());
+            studentService.additionalSortStudentsCommand(new SelectionSortStrategyEvenAlt());
         }));
         sortMenu.addHandler(new Handler("8", () -> {
             return;

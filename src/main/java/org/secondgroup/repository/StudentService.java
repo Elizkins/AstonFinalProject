@@ -14,12 +14,11 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class StudentService {
-    private static final StudentRepository studentRepository = new StudentRepository();
-    private static final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
+    private final StudentRepository studentRepository = new StudentRepository();
+    private final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
+    private final Scanner scanner = new Scanner(System.in);
 
     private Comparator<Student> comparator = new AvgGradeComparator();
-
-    private static final Scanner scanner = new Scanner(System.in);
 
     private int readInt(int minValue, int maxValue, String innerMessage) {
         while (true) {
@@ -185,12 +184,17 @@ public class StudentService {
         strategy.changeStrategy(newStrategy);
 
         Student[] students = studentRepository.getAll();
-        strategy.execSortOnEven(students, Student.class, comparator);
 
-        studentRepository.deleteAll();
-        studentRepository.add(students);
+        try {
+            strategy.execSortOnEven(students, Student.class, comparator);
 
-        System.out.println("Сортировка выполнена.");
+            studentRepository.deleteAll();
+            studentRepository.add(students);
+
+            System.out.println("Сортировка выполнена.");
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка сортировки, приведите значения сортируемого поля к числовым значения.");
+        }
     }
 
     public void changeComparatorCommand(Comparator<Student> comparator){
