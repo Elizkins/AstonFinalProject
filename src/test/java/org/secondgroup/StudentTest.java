@@ -97,11 +97,11 @@ public class StudentTest {
         IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> builder.recordBookNumber(recordNumber));
 
-        Assertions.assertEquals("Record book number must be 6-10 digits", thrown.getMessage());
+        Assertions.assertEquals("Record book number must be 6-9 digits", thrown.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"123456", "1234567890"})
+    @ValueSource(strings = {"123456", "123456789"})
     @DisplayName("RecordBookNumber validation test")
     public void validateRecordBookNumberForSuccess(String recordNumber) {
         Student.Builder builder = new Student.Builder();
