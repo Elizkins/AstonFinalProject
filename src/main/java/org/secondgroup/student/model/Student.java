@@ -45,8 +45,8 @@ public class Student implements Comparable<Student>{
             if (recordNumber == null || recordNumber.trim().isEmpty()) {
                 throw new IllegalArgumentException("Record book number cannot be empty");
             }
-            if (!recordNumber.matches("\\d{6,10}")) {
-                throw new IllegalArgumentException("Record book number must be 6-10 digits");
+            if (!recordNumber.matches("\\d{6,9}")) {
+                throw new IllegalArgumentException("Record book number must be 6-9 digits");
             }
         }
 
@@ -101,7 +101,7 @@ public class Student implements Comparable<Student>{
             if (averageGradeComparison != 0) {
                 return averageGradeComparison;
             } else {
-                return this.recordBookNumber.compareTo(otherStudent.recordBookNumber);
+                return Integer.valueOf(this.recordBookNumber).compareTo(Integer.valueOf(otherStudent.recordBookNumber));
             }
         }
     }

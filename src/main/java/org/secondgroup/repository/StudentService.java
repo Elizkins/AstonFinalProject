@@ -184,12 +184,17 @@ public class StudentService {
         strategy.changeStrategy(newStrategy);
 
         Student[] students = studentRepository.getAll();
-        strategy.execSortOnEven(students, Student.class, comparator);
 
-        studentRepository.deleteAll();
-        studentRepository.add(students);
+        try {
+            strategy.execSortOnEven(students, Student.class, comparator);
 
-        System.out.println("Сортировка выполнена.");
+            studentRepository.deleteAll();
+            studentRepository.add(students);
+
+            System.out.println("Сортировка выполнена.");
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка сортировки, приведите значения сортируемого поля к числовым значения.");
+        }
     }
 
     public void changeComparatorCommand(Comparator<Student> comparator){

@@ -14,7 +14,7 @@ public abstract class StudentInputService {
         System.out.print("Средний балл (0.0 – 5.0): ");
         double grade = Double.parseDouble(scanner.nextLine().trim());
 
-        System.out.print("Номер зачётной книжки (6-10 цифр): ");
+        System.out.print("Номер зачётной книжки (6-9 цифр): ");
         String recordBook = scanner.nextLine().trim();
 
         return new Student.Builder()
@@ -31,7 +31,7 @@ public abstract class StudentInputService {
 
         double grade = Math.round((2.0 + rnd.nextDouble() * 3.0) * 100.0) / 100.0;
 
-        int digits = 6 + rnd.nextInt(5); // 6–10 цифр
+        int digits = 6 + rnd.nextInt(4); // 6–9 цифр
         long minNum = (long) Math.pow(10, digits - 1);
         long maxNum = (long) Math.pow(10, digits);
 

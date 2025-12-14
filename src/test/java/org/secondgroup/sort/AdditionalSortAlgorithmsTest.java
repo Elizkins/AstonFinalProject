@@ -1,9 +1,11 @@
 package org.secondgroup.sort;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.secondgroup.sort.algorithms.mergesort.MergeSortEven;
 import org.secondgroup.sort.algorithms.quicksort.QuickSortEven;
-import org.secondgroup.sort.algorithms.selectionsort.SelectionSortEven;
 import org.secondgroup.sort.algorithms.selectionsort.SelectionSortEvenAlt;
 import org.secondgroup.sort.comparators.AvgGradeComparator;
 import org.secondgroup.sort.comparators.GroupNumberComparator;
@@ -31,7 +33,7 @@ public class AdditionalSortAlgorithmsTest {
                     .build();
             expectedStudents[i] = new Student.Builder()
                     .groupNumber(String.valueOf(ARRAY_SIZE - i))
-                    .averageGrade((ARRAY_SIZE - i) * 0.1)
+                    .averageGrade(i % 2)
                     .recordBookNumber(String.valueOf((ARRAY_SIZE - i) * 100001))
                     .build();
         }
@@ -39,7 +41,7 @@ public class AdditionalSortAlgorithmsTest {
         for (int i = ARRAY_SIZE; i > 0; i--) {
             students[ARRAY_SIZE - i] = new Student.Builder()
                     .groupNumber(String.valueOf(i))
-                    .averageGrade(i * 0.1)
+                    .averageGrade((i % 2) == 0 ? i * 0.1 : 1)
                     .recordBookNumber(String.valueOf(i * 100001))
                     .build();
         }
@@ -48,9 +50,9 @@ public class AdditionalSortAlgorithmsTest {
     private static void printArrays() {
         for (int i = 0; i < students.length; i++) {
             String beginStr = "";
-            if(students[i].equals(expectedStudents[i])){
+            if (students[i].equals(expectedStudents[i])) {
                 beginStr = ANSI_GREEN;
-            } else{
+            } else {
                 beginStr = ANSI_RED;
             }
             System.out.println(beginStr + students[i] + " | " + expectedStudents[i] + ANSI_RESET);

@@ -59,7 +59,7 @@ public class FixedListOfElements<T> implements Iterable<T> {
     }
 
     public void changeCapacity(int capacity){
-        if(capacity > entriesCount){
+        if(capacity >= entriesCount){
             Object[] newarr = new Object[capacity];
             System.arraycopy(elements, 0, newarr, 0, entriesCount);
             this.elements = newarr;
