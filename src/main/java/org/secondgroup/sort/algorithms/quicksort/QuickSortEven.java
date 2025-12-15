@@ -57,7 +57,7 @@ public class QuickSortEven {
         }
     }
 
-    public static <T extends Student> void sort(T[] array, int low, int high, Comparator<T> compar) {
+    private static <T extends Student> void sort(T[] array, int low, int high, Comparator<T> compar) {
 
         // Defining base case and recursion exit conditions
         if (low >= high) {
@@ -104,7 +104,7 @@ public class QuickSortEven {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Student> T[] extractEven(T[] arr, Class<T> classItself, int field) {
+    private static <T extends Student> T[] extractEven(T[] arr, Class<T> classItself, int field) {
         T[] arrEven = (T[]) Array.newInstance(classItself, arr.length);
         int num = -1;
         int counterEven = 0;

@@ -72,7 +72,7 @@ public abstract  class StudentsFileToCollection {
         if (line.isEmpty()) return null;
         String[] parts = line.split(";");
         if (parts.length != 3) {
-            System.out.println("Студент пропущен - ошибка в данных файла: The number of parameters is not equal to 3");
+            System.out.printf("Студент пропущен - ошибка в данных файла, в строке: \"%s\"\n", line);
             return null;
         }
         try {

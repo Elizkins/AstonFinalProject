@@ -16,7 +16,11 @@ import java.util.Scanner;
 public class StudentService {
     private final StudentRepository studentRepository = new StudentRepository();
     private final TestObjectForStrategiesUse strategy = new TestObjectForStrategiesUse(new SelectionSortStrategy());
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+
+    public StudentService(Scanner systemIn) {
+        this.scanner = systemIn;
+    }
 
     private Comparator<Student> comparator = new AvgGradeComparator();
 

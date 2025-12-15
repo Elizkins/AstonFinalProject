@@ -8,16 +8,18 @@ public class Menu {
     private String text;
     private Set<Handler> handlers;
     private String notHandledText;
+    private Scanner sysin;
 
-    public Menu(String text, String notHandledText) {
+    public Menu(String text, String notHandledText, Scanner sysin) {
         this.text = text;
         this.notHandledText = notHandledText;
         this.handlers = new HashSet<>();
+        this.sysin = sysin;
     }
 
     public void run() {
         System.out.println(text);
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = sysin;
         String input = scanner.nextLine().trim();
         handlers.stream()
                 .filter(handler -> handler.handle(input)) //обрабатываем ввод
