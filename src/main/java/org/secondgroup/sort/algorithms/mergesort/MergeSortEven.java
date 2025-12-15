@@ -116,7 +116,7 @@ public class MergeSortEven {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Student> T[] extractEven(T[] arr, Class<T> classItself, int field) {
+    private static <T extends Student> T[] extractEven(T[] arr, Class<T> classItself, int field) {
         T[] arrEven = (T[]) Array.newInstance(classItself, arr.length);
         int num = -1;
         int counterEven = 0;

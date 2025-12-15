@@ -2,7 +2,6 @@ package org.secondgroup.service;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,8 +13,6 @@ import org.secondgroup.repository.StudentService;
 import org.secondgroup.student.model.Student;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Scanner;
@@ -41,7 +38,7 @@ public class ServiceTest {
     public void readIntTest() throws Exception {
         provideInput(TEST_INPUT);
 
-        StudentService studentService = new StudentService();
+        StudentService studentService = new StudentService(new Scanner(System.in));
 
         Method method = StudentService.class.getDeclaredMethod("readInt",
                 int.class, int.class, String.class);
@@ -57,7 +54,7 @@ public class ServiceTest {
     public void changeCapacityCommand() throws Exception {
         provideInput(TEST_INPUT);
 
-        StudentService studentService = new StudentService();
+        StudentService studentService = new StudentService(new Scanner(System.in));
 
         studentService.changeCapacityCommand();
 
@@ -73,7 +70,7 @@ public class ServiceTest {
     public void addStudentManuallyCommandTest() throws Exception {
         provideInput(TEST_INPUT + TEST_GROUP_NUMBER + "\n" + TEST_GRADE + "\n" + TEST_REC_NUMBER);
 
-        StudentService studentService = new StudentService();
+        StudentService studentService = new StudentService(new Scanner(System.in));
         studentService.addStudentManuallyCommand();
 
         Field repo = StudentService.class.getDeclaredField("studentRepository");
@@ -102,7 +99,7 @@ public class ServiceTest {
         try (MockedStatic<StudentInputService> mockedStatic = mockStatic(StudentInputService.class)) {
             mockedStatic.when(StudentInputService::getStudentWithRandom).thenReturn(student);
 
-            StudentService studentService = new StudentService();
+            StudentService studentService = new StudentService(new Scanner(System.in));
             studentService.addRandomStudentsCommand();
 
             Field repo = StudentService.class.getDeclaredField("studentRepository");
@@ -130,7 +127,7 @@ public class ServiceTest {
             mockedStatic.when(() -> StudentsFileToCollection.processFile(Mockito.anyString(), Mockito.anyInt()))
                     .thenReturn(newStudents);
 
-            StudentService studentService = new StudentService();
+            StudentService studentService = new StudentService(new Scanner(System.in));
             studentService.loadFromFileCommand();
 
             Field repo = StudentService.class.getDeclaredField("studentRepository");
