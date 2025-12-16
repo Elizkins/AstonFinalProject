@@ -27,11 +27,11 @@ public class App {
                 "4. Очистка коллекции\n" +
                 "5. Задать размер массива\n" +
                 "6. Узнать количество вхождений элемента в коллекцию\n" +
-                "7. Выход", "Некорректный ввод. Введите число от 1 до 6", sysIn);
+                "7. Выход", "Некорректный ввод. Введите число от 1 до 7", sysIn);
         mainMenu.addHandler(new Handler("4", studentService::clearCommand));
         mainMenu.addHandler(new Handler("5", studentService::changeCapacityCommand));
         mainMenu.addHandler(new Handler("6", studentService::countOcurrencyCommand));
-        mainMenu.addHandler(new Handler("7", () -> isRunning[0] = false));
+        mainMenu.addHandler(new Handler("7", mainMenu::stop));
 
         //выбор способа ввода
         Menu inputMenu = new Menu("Выберите способ ввода\n" +
@@ -42,9 +42,7 @@ public class App {
         inputMenu.addHandler(new Handler("1", studentService::addStudentManuallyCommand));
         inputMenu.addHandler(new Handler("2", studentService::loadFromFileCommand));
         inputMenu.addHandler(new Handler("3", studentService::addRandomStudentsCommand));
-        inputMenu.addHandler(new Handler("4", () -> {
-            return;
-        }));
+        inputMenu.addHandler(new Handler("4", inputMenu::stop));
 
         //Выбор способа вывода
         Menu outputMenu = new Menu("Выберите способ вывода\n" +
@@ -53,9 +51,7 @@ public class App {
                 "3. Вернуться назад", "Некорректный ввод. Введите число от 1 до 3", sysIn);
         outputMenu.addHandler(new Handler("1", studentService::printToConsoleCommand));
         outputMenu.addHandler(new Handler("2", studentService::saveToFileCommand));
-        outputMenu.addHandler(new Handler("3", () -> {
-            return;
-        }));
+        outputMenu.addHandler(new Handler("3", outputMenu::stop));
 
         //Выбор способа сортировки
         Menu sortMenu = new Menu("Выберите способ сортировки\n" +
@@ -87,9 +83,7 @@ public class App {
         sortMenu.addHandler(new Handler("6", () -> {
             studentService.additionalSortStudentsCommand(new SelectionSortStrategyEvenAlt());
         }));
-        sortMenu.addHandler(new Handler("8", () -> {
-            return;
-        }));
+        sortMenu.addHandler(new Handler("8", sortMenu::stop));
 
         Menu comparatorMenu = new Menu("Выберите поле для сортировки\n" +
                 "1. По группе\n" +
@@ -107,9 +101,7 @@ public class App {
         comparatorMenu.addHandler(new Handler("3", () -> {
             studentService.changeComparatorCommand(new RegBookComparator());
         }));
-        comparatorMenu.addHandler(new Handler("4", () -> {
-            return;
-        }));
+        comparatorMenu.addHandler(new Handler("4", comparatorMenu::stop));
 
         sortMenu.addHandler(new Handler("7", comparatorMenu::run));
 
@@ -117,6 +109,8 @@ public class App {
         mainMenu.addHandler(new Handler("2", outputMenu::run));
         mainMenu.addHandler(new Handler("3", sortMenu::run));
 
-        while (isRunning[0]) mainMenu.run();
+        mainMenu.run();
+
+        sysIn.close();
     }
 }

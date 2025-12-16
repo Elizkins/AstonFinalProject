@@ -9,25 +9,52 @@ public class Menu {
     private Set<Handler> handlers;
     private String notHandledText;
     private Scanner sysin;
+    private boolean isRunning;
 
     public Menu(String text, String notHandledText, Scanner sysin) {
         this.text = text;
         this.notHandledText = notHandledText;
         this.handlers = new HashSet<>();
         this.sysin = sysin;
+        this.isRunning = false;
     }
 
     public void run() {
-        System.out.println(text);
-        Scanner scanner = sysin;
-        String input = scanner.nextLine().trim();
-        handlers.stream()
-                .filter(handler -> handler.handle(input)) //обрабатываем ввод
-                .findFirst()
-                .orElseGet(() -> {
-                    System.out.println(notHandledText); //Если не значение не обработалось, выводим notHandledText
-                    return null;
-                });
+        isRunning = true;
+
+        while (isRunning) {
+            System.out.println(text);
+            String input = sysin.nextLine().trim();
+
+            boolean handled = false;
+            for (Handler handler : handlers) {
+                if (handler.handle(input)) {
+                    handled = true;
+                    break;
+                }
+            }
+
+            if (!handled) {
+                System.out.println(notHandledText);
+            }
+        }
+    }
+
+//    public void run() {
+//        System.out.println(text);
+//        Scanner scanner = sysin;
+//        String input = scanner.nextLine().trim();
+//        handlers.stream()
+//                .filter(handler -> handler.handle(input)) //обрабатываем ввод
+//                .findFirst()
+//                .orElseGet(() -> {
+//                    System.out.println(notHandledText); //Если не значение не обработалось, выводим notHandledText
+//                    return null;
+//                });
+//    }
+
+    public void stop() {
+        isRunning = false;
     }
 
     public void addHandler(Handler handler) {
