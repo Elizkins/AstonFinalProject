@@ -17,8 +17,6 @@ public class App {
     static StudentService studentService = new StudentService(sysIn);
 
     public static void main(String[] args) {
-        boolean[] isRunning = {true}; // создаем массив из одного элемента чтобы можно было менять значение в лямбде
-
         //главное меню
         Menu mainMenu = new Menu("Выберите действие\n" +
                 "1. Ввод коллекции\n" +

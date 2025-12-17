@@ -40,19 +40,6 @@ public class Menu {
         }
     }
 
-//    public void run() {
-//        System.out.println(text);
-//        Scanner scanner = sysin;
-//        String input = scanner.nextLine().trim();
-//        handlers.stream()
-//                .filter(handler -> handler.handle(input)) //обрабатываем ввод
-//                .findFirst()
-//                .orElseGet(() -> {
-//                    System.out.println(notHandledText); //Если не значение не обработалось, выводим notHandledText
-//                    return null;
-//                });
-//    }
-
     public void stop() {
         isRunning = false;
     }
